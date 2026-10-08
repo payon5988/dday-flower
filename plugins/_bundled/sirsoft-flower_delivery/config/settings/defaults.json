@@ -1,0 +1,14 @@
+{
+    "_meta": {
+        "version": "0.1.0",
+        "description": "꽃배달 확장 플러그인 환경설정"
+    },
+    "defaults": {
+        "same_day_cutoff": "14:00",
+        "slot_cache_ttl": 300
+    },
+    "frontend_schema": {
+        "same_day_cutoff": { "expose": true },
+        "slot_cache_ttl": { "expose": false }
+    }
+}

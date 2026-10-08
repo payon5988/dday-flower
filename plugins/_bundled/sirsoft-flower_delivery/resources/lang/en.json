@@ -1,0 +1,28 @@
+{
+    "checkout_notice_title": "Choose a flower delivery time",
+    "checkout_notice_desc": "Reserve a date and time in the premium flower hall first for faster checkout.",
+    "checkout_notice_cta": "Go to the premium flower hall",
+    "admin": {
+        "board_title": "Flower Slot Board",
+        "board_toggle_close": "Close",
+        "board_toggle_open": "Open",
+        "board_toggled": "Saved.",
+        "faq_title": "Flower FAQ Management",
+        "faq_q_ph": "Question (Korean)",
+        "faq_a_ph": "Answer (Korean)",
+        "faq_submit": "Add",
+        "faq_created": "Created.",
+        "faq_hide": "Hide",
+        "faq_show": "Show",
+        "faq_delete": "Delete",
+        "faq_deleted": "Deleted.",
+        "faq_failed": "Processing failed.",
+        "faq_invalid": "Please check your input.",
+        "board_day_cutoff_prefix": "Cutoff ",
+        "board_day_remaining_prefix": " · Remaining today ",
+        "slot_board": {
+            "title": "Flower Slot Board"
+        }
+    },
+    "settings_desc": "Set the same-day cutoff time and slot cache TTL."
+}

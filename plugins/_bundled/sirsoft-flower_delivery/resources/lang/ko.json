@@ -1,0 +1,28 @@
+{
+    "checkout_notice_title": "꽃배달 시간 지정",
+    "checkout_notice_desc": "프리미엄 꽃배달관에서 날짜와 시간을 먼저 예약하면 체크아웃이 더 빨라집니다.",
+    "checkout_notice_cta": "프리미엄 꽃배달관으로 이동",
+    "admin": {
+        "board_title": "꽃배달 슬롯 현황",
+        "board_toggle_close": "마감하기",
+        "board_toggle_open": "열기",
+        "board_toggled": "반영되었습니다.",
+        "faq_title": "꽃배달 FAQ 관리",
+        "faq_q_ph": "질문 (한국어)",
+        "faq_a_ph": "답변 (한국어)",
+        "faq_submit": "등록하기",
+        "faq_created": "등록되었습니다.",
+        "faq_hide": "숨기기",
+        "faq_show": "보이기",
+        "faq_delete": "삭제",
+        "faq_deleted": "삭제되었습니다.",
+        "faq_failed": "처리에 실패했습니다.",
+        "faq_invalid": "입력값을 확인해 주세요.",
+        "board_day_cutoff_prefix": "당일 마감 ",
+        "board_day_remaining_prefix": " · 당일 잔여 ",
+        "slot_board": {
+            "title": "꽃배달 슬롯 현황"
+        }
+    },
+    "settings_desc": "당일배송 마감 시각과 슬롯 캐시 TTL을 설정합니다."
+}

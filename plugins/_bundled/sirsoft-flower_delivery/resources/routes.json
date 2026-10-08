@@ -1,0 +1,23 @@
+{
+    "version": "1.0.0",
+    "routes": [
+        {
+            "path": "*/admin/plugins/sirsoft-flower_delivery/slot-board",
+            "layout": "slot_board",
+            "auth_required": true,
+            "meta": {
+                "title": "$t:sirsoft-flower_delivery.admin.slot_board.title",
+                "permission": "sirsoft-flower_delivery.slots.view"
+            }
+        },
+        {
+            "path": "*/admin/plugins/sirsoft-flower_delivery/faq-board",
+            "layout": "faq_board",
+            "auth_required": true,
+            "meta": {
+                "title": "$t:sirsoft-flower_delivery.admin.faq_title",
+                "permission": "sirsoft-flower_delivery.slots.view"
+            }
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "plugin_settings",
+  "title": { "ko": "꽃배달 설정", "en": "Flower Delivery Settings" },
+  "components": [
+    {
+      "type": "Div",
+      "props": { "className": "p-4" },
+      "children": [
+        {
+          "type": "Span",
+          "props": {           "text": "$t:sirsoft-flower_delivery.settings_desc" }
+        }
+      ]
+    }
+  ]
+}

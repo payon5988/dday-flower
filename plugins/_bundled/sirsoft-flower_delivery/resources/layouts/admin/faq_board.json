@@ -1,0 +1,223 @@
+{
+    "version": "1.0.0",
+    "layout_name": "faq_board",
+    "permissions": [
+        "sirsoft-flower_delivery.slots.view"
+    ],
+    "extends": "_admin_base",
+    "meta": {
+        "title": "$t:sirsoft-flower_delivery.admin.faq_title",
+        "description": "$t:sirsoft-flower_delivery.admin.faq_title"
+    },
+    "data_sources": [
+        {
+            "id": "faqBoard",
+            "label_key": "$t:editor.data_source.flowerSlots",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/admin/faqs",
+            "method": "GET",
+            "auth_mode": "required",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "faqs": []
+            }
+        }
+    ],
+    "slots": {
+        "content": [
+            {
+                "type": "basic",
+                "name": "Div",
+                "props": {
+                    "className": "p-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "text-lg font-bold"
+                        },
+                        "text": "$t:sirsoft-flower_delivery.admin.faq_title"
+                    },
+                    {
+                        "comment": "신규 등록 폼 — 한국어 필수, 영어·일본어 선택",
+                        "type": "basic",
+                        "name": "Form",
+                        "props": {
+                            "className": "mt-4 p-4 border rounded-lg space-y-2"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Input",
+                                "props": {
+                                    "type": "text",
+                                    "name": "question_ko",
+                                    "value": "{{_local.form?.question_ko ?? ''}}",
+                                    "placeholder": "$t:sirsoft-flower_delivery.admin.faq_q_ph",
+                                    "className": "w-full px-3 py-2 border rounded-lg"
+                                },
+                                "actions": [
+                                    { "type": "change", "handler": "setState", "params": { "target": "local", "form.question_ko": "{{$event.target.value}}" } }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Textarea",
+                                "props": {
+                                    "name": "answer_ko",
+                                    "value": "{{_local.form?.answer_ko ?? ''}}",
+                                    "placeholder": "$t:sirsoft-flower_delivery.admin.faq_a_ph",
+                                    "className": "w-full px-3 py-2 border rounded-lg"
+                                },
+                                "actions": [
+                                    { "type": "change", "handler": "setState", "params": { "target": "local", "form.answer_ko": "{{$event.target.value}}" } }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Button",
+                                "props": {
+                                    "type": "button",
+                                    "className": "px-4 py-2 rounded-lg bg-gray-900 text-white font-medium"
+                                },
+                                "text": "$t:sirsoft-flower_delivery.admin.faq_submit",
+                                "actions": [
+                                    {
+                                        "type": "click",
+                                        "handler": "apiCall",
+                                        "target": "/api/plugins/sirsoft-flower_delivery/admin/faqs",
+                                        "params": {
+                                            "method": "POST",
+                                            "body": {
+                                                "question": { "ko": "{{_local.form?.question_ko ?? ''}}" },
+                                                "answer": { "ko": "{{_local.form?.answer_ko ?? ''}}" }
+                                            }
+                                        },
+                                        "onSuccess": [
+                                            { "handler": "toast", "params": { "type": "success", "message": "$t:sirsoft-flower_delivery.admin.faq_created" } },
+                                            { "handler": "setState", "params": { "target": "local", "form.question_ko": "", "form.answer_ko": "" } },
+                                            { "handler": "refetchDataSource", "params": { "dataSourceId": "faqBoard" } }
+                                        ],
+                                        "onError": [
+                                            { "handler": "toast", "params": { "type": "error", "message": "$t:sirsoft-flower_delivery.admin.faq_invalid" } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-4 space-y-2"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "iteration": { "source": "{{faqBoard?.data?.faqs ?? []}}", "item_var": "faq" },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "p-3 border rounded-lg flex items-start justify-between gap-3"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "font-semibold"
+                                                        },
+                                                        "text": "{{faq?.question?.ko ?? ''}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs opacity-70 mt-1"
+                                                        },
+                                                        "text": "{{faq?.answer?.ko ?? ''}}"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "flex gap-2 shrink-0"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Button",
+                                                        "props": {
+                                                            "type": "button",
+                                                            "className": "px-3 py-1.5 rounded-lg text-sm border"
+                                                        },
+                                                        "text": "{{faq?.is_active ? '$t:sirsoft-flower_delivery.admin.faq_hide' : '$t:sirsoft-flower_delivery.admin.faq_show'}}",
+                                                        "actions": [
+                                                            {
+                                                                "type": "click",
+                                                                "handler": "apiCall",
+                                                                "target": "/api/plugins/sirsoft-flower_delivery/admin/faqs/{{faq?.id}}/toggle",
+                                                                "params": {
+                                                                    "method": "PATCH"
+                                                                },
+                                                                "onSuccess": [
+                                                                    { "handler": "refetchDataSource", "params": { "dataSourceId": "faqBoard" } }
+                                                                ],
+                                                                "onError": [
+                                                                    { "handler": "toast", "params": { "type": "error", "message": "$t:sirsoft-flower_delivery.admin.faq_failed" } }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Button",
+                                                        "props": {
+                                                            "type": "button",
+                                                            "className": "px-3 py-1.5 rounded-lg text-sm border border-red-300 text-red-600"
+                                                        },
+                                                        "text": "$t:sirsoft-flower_delivery.admin.faq_delete",
+                                                        "actions": [
+                                                            {
+                                                                "type": "click",
+                                                                "handler": "apiCall",
+                                                                "target": "/api/plugins/sirsoft-flower_delivery/admin/faqs/{{faq?.id}}",
+                                                                "params": {
+                                                                    "method": "DELETE"
+                                                                },
+                                                                "onSuccess": [
+                                                                    { "handler": "toast", "params": { "type": "success", "message": "$t:sirsoft-flower_delivery.admin.faq_deleted" } },
+                                                                    { "handler": "refetchDataSource", "params": { "dataSourceId": "faqBoard" } }
+                                                                ],
+                                                                "onError": [
+                                                                    { "handler": "toast", "params": { "type": "error", "message": "$t:sirsoft-flower_delivery.admin.faq_failed" } }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

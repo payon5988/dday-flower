@@ -1,0 +1,36 @@
+{
+    "identifier": "sirsoft-flower_delivery",
+    "vendor": "sirsoft",
+    "name": {
+        "ko": "꽃배달 확장 (Flower Delivery)",
+        "en": "Flower Delivery Extension"
+    },
+    "version": "0.8.0",
+    "description": {
+        "ko": "sirsoft-ecommerce 기반 꽃배달 특화 기능 (배송 슬롯, 메시지 카드, 정기구독)을 제공하는 플러그인입니다. 코어·이커머스 무수정, 훅 격리 방식.",
+        "en": "Flower-delivery features for sirsoft-ecommerce (delivery slots, message cards, subscriptions). No core edits, hook-isolated."
+    },
+    "license": "MIT",
+    "g7_version": ">=7.0.10",
+    "dependencies": {
+        "modules": {
+            "sirsoft-ecommerce": ">=1.2.1"
+        },
+        "plugins": {}
+    },
+    "assets": {
+        "js": {
+            "entry": "resources/js/index.ts",
+            "output": "dist/js/plugin.iife.js"
+        },
+        "css": {
+            "entry": "resources/css/flower.css",
+            "output": "dist/css/plugin.css"
+        },
+        "handlers": true
+    },
+    "loading": {
+        "strategy": "global",
+        "priority": 100
+    }
+}

@@ -1,0 +1,152 @@
+{
+    "version": "1.0.0",
+    "layout_name": "slot_board",
+    "permissions": [
+        "sirsoft-flower_delivery.slots.view"
+    ],
+    "extends": "_admin_base",
+    "meta": {
+        "title": "$t:sirsoft-flower_delivery.admin.board_title",
+        "description": "날짜별 배송 슬롯 정원·예약·잔여 현황과 활성 전환"
+    },
+    "data_sources": [
+        {
+            "id": "slotBoard",
+            "label_key": "$t:editor.data_source.flowerSlots",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/admin/delivery-slots/board",
+            "method": "GET",
+            "auth_mode": "required",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "date": "",
+                "day": {},
+                "slots": []
+            }
+        }
+    ],
+    "slots": {
+        "content": [
+            {
+                "type": "basic",
+                "name": "Div",
+                "props": {
+                    "className": "p-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "text-lg font-bold"
+                        },
+                        "text": "{{slotBoard?.data?.date ?? ''}}"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "text-sm opacity-70 mt-1"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Span",
+                                "text": "$t:sirsoft-flower_delivery.admin.board_day_cutoff_prefix"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Span",
+                                "text": "{{slotBoard?.data?.day?.cutoff ?? ''}}"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Span",
+                                "text": "$t:sirsoft-flower_delivery.admin.board_day_remaining_prefix"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Span",
+                                "text": "{{slotBoard?.data?.day?.same_day_remaining ?? 0}}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "mt-4 space-y-2"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "iteration": { "source": "{{slotBoard?.data?.slots ?? []}}", "item_var": "slot" },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "flex items-center justify-between p-3 border rounded-lg"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "font-semibold"
+                                                        },
+                                                        "text": "{{slot?.time ?? ''}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs opacity-70"
+                                                        },
+                                                        "text": "{{slot?.current_bookings ?? 0}} / {{slot?.max_capacity ?? 0}} (잔여 {{slot?.remaining ?? 0}})"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "props": {
+                                                    "type": "button",
+                                                    "className": "px-3 py-1.5 rounded-lg text-sm border"
+                                                },
+                                                "text": "{{slot?.is_active ? '$t:sirsoft-flower_delivery.admin.board_toggle_close' : '$t:sirsoft-flower_delivery.admin.board_toggle_open'}}",
+                                                "actions": [
+                                                    {
+                                                        "type": "click",
+                                                        "handler": "apiCall",
+                                                        "target": "/api/plugins/sirsoft-flower_delivery/admin/delivery-slots/{{slot?.id}}/toggle",
+                                                        "params": {
+                                                            "method": "PATCH"
+                                                        },
+                                                        "onSuccess": [
+                                                            { "handler": "toast", "params": { "type": "success", "message": "$t:sirsoft-flower_delivery.admin.board_toggled" } },
+                                                            { "handler": "refetchDataSource", "params": { "dataSourceId": "slotBoard" } }
+                                                        ],
+                                                        "onError": [
+                                                            { "handler": "toast", "params": { "type": "error", "message": "{{error.message ?? ''}}" } }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

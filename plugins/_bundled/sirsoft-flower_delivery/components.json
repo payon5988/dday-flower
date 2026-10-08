@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "identifier": "sirsoft-flower_delivery",
+    "version": "0.3.1",
+    "components": {
+        "basic": [],
+        "composite": [],
+        "layout": []
+    }
+}
