@@ -448,6 +448,38 @@
                                                 }
                                             }
                                         ]
+                                    },
+                                    {
+                                        "comment": "엑셀 일괄등록 모달 열기",
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "type": "button",
+                                            "className": "btn disabled:opacity-50 disabled:cursor-not-allowed",
+                                            "disabled": "{{products?.data?.abilities?.can_create !== true}}"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Icon",
+                                                "props": {
+                                                    "name": "upload",
+                                                    "className": "text-base"
+                                                }
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "text": "$t:sirsoft-ecommerce.admin.product.import.title"
+                                            }
+                                        ],
+                                        "actions": [
+                                            {
+                                                "type": "click",
+                                                "handler": "openModal",
+                                                "target": "modal_bulk_import"
+                                            }
+                                        ]
                                     }
                                 ]
                             }
@@ -895,6 +927,9 @@
         },
         {
             "partial": "partials/admin_ecommerce_product_list/_modal_excel_download.json"
+        },
+        {
+            "partial": "partials/admin_ecommerce_product_list/_modal_bulk_import.json"
         },
         {
             "partial": "partials/admin_ecommerce_product_list/_modal_delete_confirm.json"

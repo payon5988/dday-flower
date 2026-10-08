@@ -1,0 +1,257 @@
+{
+    "meta": {
+        "is_partial": true,
+        "description": "Product Index - Bulk Import Modal (CSV)"
+    },
+    "id": "modal_bulk_import",
+    "type": "composite",
+    "name": "Modal",
+    "props": {
+        "title": "$t:sirsoft-ecommerce.admin.product.import.title",
+        "description": "$t:sirsoft-ecommerce.admin.product.import.desc",
+        "size": "md"
+    },
+    "children": [
+        {
+            "type": "basic",
+            "name": "Div",
+            "props": {
+                "className": "space-y-4"
+            },
+            "children": [
+                {
+                    "type": "basic",
+                    "name": "Button",
+                    "props": {
+                        "type": "button",
+                        "className": "btn"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Icon",
+                            "props": {
+                                "name": "download",
+                                "className": "text-base"
+                            }
+                        },
+                        {
+                            "type": "basic",
+                            "name": "Span",
+                            "text": "$t:sirsoft-ecommerce.admin.product.import.sample_btn"
+                        }
+                    ],
+                    "actions": [
+                        {
+                            "comment": "샘플 CSV 다운로드 (토큰 동반 blob → 파일 저장)",
+                            "type": "click",
+                            "handler": "downloadAttachment",
+                            "params": {
+                                "url": "/api/modules/sirsoft-ecommerce/admin/products/import/sample",
+                                "filename": "products_sample.csv"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "name": "Div",
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Label",
+                            "props": {
+                                "className": "form-label"
+                            },
+                            "text": "$t:sirsoft-ecommerce.admin.product.import.file_label"
+                        },
+                        {
+                            "type": "basic",
+                            "name": "FileInput",
+                            "props": {
+                                "accept": ".csv",
+                                "className": "w-full",
+                                "buttonText": "$t:common.browse",
+                                "placeholder": "$t:sirsoft-ecommerce.admin.product.import.file_label"
+                            },
+                            "actions": [
+                                {
+                                    "type": "change",
+                                    "handler": "setState",
+                                    "params": {
+                                        "target": "local",
+                                        "importFile": "{{$event.target.value}}",
+                                        "importFileName": "{{$event.target.value?.name}}",
+                                        "importResult": null,
+                                        "importErrors": null
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "name": "Div",
+                    "props": {
+                        "className": "flex items-center gap-2"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Checkbox",
+                            "props": {
+                                "checked": "{{_local.importDryRun ?? false}}",
+                                "className": "w-4 h-4"
+                            },
+                            "actions": [
+                                {
+                                    "type": "change",
+                                    "handler": "setState",
+                                    "params": {
+                                        "target": "local",
+                                        "importDryRun": "{{!(_local.importDryRun ?? false)}}"
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "basic",
+                            "name": "Span",
+                            "props": {
+                                "className": "text-sm"
+                            },
+                            "text": "$t:sirsoft-ecommerce.admin.product.import.dry_run"
+                        }
+                    ]
+                },
+                {
+                    "comment": "처리 결과 요약 (성공 시에만 표시)",
+                    "type": "basic",
+                    "name": "Div",
+                    "if": "{{_local.importResult}}",
+                    "props": {
+                        "className": "p-3 rounded-lg bg-green-50 dark:bg-green-900/20 text-sm"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "P",
+                            "text": "$t:sirsoft-ecommerce.admin.product.import.result_summary|row_count={{_local.importResult?.row_count ?? 0}}|created={{_local.importResult?.created ?? 0}}|updated={{_local.importResult?.updated ?? 0}}"
+                        }
+                    ]
+                },
+                {
+                    "comment": "행 오류 목록 (실패 시에만 표시)",
+                    "type": "basic",
+                    "name": "Div",
+                    "if": "{{(_local.importErrors ?? []).length > 0}}",
+                    "props": {
+                        "className": "p-3 rounded-lg bg-red-50 dark:bg-red-900/20 text-sm space-y-1 max-h-48 overflow-auto"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Div",
+                            "iteration": {
+                                "source": "{{_local.importErrors ?? []}}",
+                                "item_var": "rowError"
+                            },
+                            "children": [
+                                {
+                                    "type": "basic",
+                                    "name": "P",
+                                    "text": "{{rowError?.row}}행 {{rowError?.field}}: {{rowError?.message}}"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "name": "Div",
+                    "props": {
+                        "className": "flex justify-end gap-2"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Button",
+                            "props": {
+                                "type": "button",
+                                "className": "btn"
+                            },
+                            "text": "$t:sirsoft-ecommerce.admin.product.import.close",
+                            "actions": [
+                                {
+                                    "type": "click",
+                                    "handler": "closeModal"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "basic",
+                            "name": "Button",
+                            "props": {
+                                "type": "button",
+                                "className": "btn btn-primary disabled:opacity-50 disabled:cursor-not-allowed",
+                                "disabled": "{{!_local.importFile}}"
+                            },
+                            "text": "$t:sirsoft-ecommerce.admin.product.import.upload_btn",
+                            "actions": [
+                                {
+                                    "comment": "CSV 업로드 (multipart) — 검증 실패 시 행 오류 표시, 성공 시 목록 새로고침",
+                                    "type": "click",
+                                    "handler": "apiCall",
+                                    "auth_required": true,
+                                    "target": "/api/modules/sirsoft-ecommerce/admin/products/import",
+                                    "params": {
+                                        "method": "POST",
+                                        "contentType": "multipart/form-data",
+                                        "body": {
+                                            "file": "{{_local.importFile}}",
+                                            "dry_run": "{{_local.importDryRun ? 1 : 0}}"
+                                        }
+                                    },
+                                    "onSuccess": [
+                                        {
+                                            "handler": "setState",
+                                            "params": {
+                                                "target": "local",
+                                                "importResult": "{{response.data}}",
+                                                "importErrors": null
+                                            }
+                                        },
+                                        {
+                                            "handler": "refetchDataSource",
+                                            "params": {
+                                                "dataSourceId": "products"
+                                            }
+                                        }
+                                    ],
+                                    "onError": [
+                                        {
+                                            "handler": "setState",
+                                            "params": {
+                                                "target": "local",
+                                                "importResult": null,
+                                                "importErrors": "{{error.errors ?? []}}"
+                                            }
+                                        },
+                                        {
+                                            "handler": "toast",
+                                            "params": {
+                                                "type": "error",
+                                                "message": "{{error.message}}"
+                                            }
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -8,7 +8,7 @@
 
 ```text
 1. 이 문서는 실제 API 호출로 실측한 Presets 엔드포인트 레퍼런스입니다
-2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(curl) + 실측 응답 필드 표 + 응답 예시(envelope)
+2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(raw HTTP) + 실측 응답 필드 표 + 응답 예시(envelope)
 3. 응답 필드의 예시값·응답 예시 JSON 은 실제 호출 응답에서 관측된 값입니다
 4. 갱신: 코드 변경 후 php artisan api:docgen 재실행
 5. 설명(TODO) 칸은 사람이 채웁니다
@@ -21,7 +21,7 @@
 <!-- @generated:start:api.modules.sirsoft-ecommerce.admin.presets.index -->
 - **라우트명**: `api.modules.sirsoft-ecommerce.admin.presets.index`
 - **컨트롤러**: `Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\SearchPresetController@index`
-- **인증/권한**: `auth:sanctum`, `admin`, `permission:admin,sirsoft-ecommerce.products.read`
+- **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.products.read`
 
 **요청 파라미터**
 
@@ -41,6 +41,8 @@ Authorization: Bearer {YOUR_TOKEN}
 ```
 
 **응답 필드** (`data` 내부)
+
+
 
 _목록 응답: `data[]` 배열 항목의 필드 (페이지네이션 없음 — 현재 사용자·해당 화면의 프리셋 전체를 배열로 반환)._
 
@@ -92,6 +94,7 @@ HTTP/1.1 200
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
+| 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.read`)이 없는 경우 |
 | 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 
 <!-- @generated:end -->
@@ -103,7 +106,7 @@ HTTP/1.1 200
 <!-- @generated:start:api.modules.sirsoft-ecommerce.admin.presets.store -->
 - **라우트명**: `api.modules.sirsoft-ecommerce.admin.presets.store`
 - **컨트롤러**: `Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\SearchPresetController@store`
-- **인증/권한**: `auth:sanctum`, `admin`, `permission:admin,sirsoft-ecommerce.products.update`
+- **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.products.update`
 
 **요청 파라미터**
 
@@ -181,6 +184,7 @@ HTTP/1.1 201
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
+| 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.update`)이 없는 경우 |
 | 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지). 동일 사용자·동일 화면에 같은 이름의 프리셋이 이미 있으면 `name` 에 "동일한 이름의 프리셋이 이미 존재합니다." |
 
 <!-- @generated:end -->
@@ -192,7 +196,7 @@ HTTP/1.1 201
 <!-- @generated:start:api.modules.sirsoft-ecommerce.admin.presets.destroy -->
 - **라우트명**: `api.modules.sirsoft-ecommerce.admin.presets.destroy`
 - **컨트롤러**: `Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\SearchPresetController@destroy`
-- **인증/권한**: `auth:sanctum`, `admin`, `permission:admin,sirsoft-ecommerce.products.update`
+- **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.products.update`
 
 **요청 파라미터**
 
@@ -238,6 +242,7 @@ HTTP/1.1 200
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
+| 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.update`)이 없는 경우 |
 | 404 | Not Found | path 파라미터에 해당하는 리소스가 없는 경우 |
 | 500 | UnauthorizedPresetAccessException | 다른 사용자 소유의 프리셋을 삭제하려는 경우 (`SearchPresetService::delete()` 의 소유권 검사 — "프리셋(ID: :preset_id)에 대한 접근 권한이 없습니다."). 이 예외는 전용 status 나 `render()` 를 갖지 않아 기본 예외 처리로 500 이 됩니다 (테스트 하네스 `ModuleTestCase` 에서만 403 으로 매핑) |
 
@@ -250,7 +255,7 @@ HTTP/1.1 200
 <!-- @generated:start:api.modules.sirsoft-ecommerce.admin.presets.update -->
 - **라우트명**: `api.modules.sirsoft-ecommerce.admin.presets.update`
 - **컨트롤러**: `Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\SearchPresetController@update`
-- **인증/권한**: `auth:sanctum`, `admin`, `permission:admin,sirsoft-ecommerce.products.update`
+- **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.products.update`
 
 **요청 파라미터**
 
@@ -329,6 +334,7 @@ HTTP/1.1 200
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
+| 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.update`)이 없는 경우 |
 | 404 | Not Found | path 파라미터에 해당하는 리소스가 없는 경우 |
 | 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지). 동일 사용자·동일 화면에 같은 이름의 다른 프리셋이 있으면 `name` 에 "동일한 이름의 프리셋이 이미 존재합니다." |
 | 500 | UnauthorizedPresetAccessException | 다른 사용자 소유의 프리셋을 수정하려는 경우 (`SearchPresetService::update()` 의 소유권 검사). 전용 status/`render()` 가 없어 기본 예외 처리로 500 (테스트 하네스에서만 403 매핑) |

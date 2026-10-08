@@ -29,7 +29,9 @@
     "shop": "ショッピング",
     "products": "商品",
     "cart": "カート",
-    "mypage": "マイページ"
+    "mypage": "マイページ",
+    "orders": "注文履歴",
+    "wishlist": "お気に入り"
   },
   "footer": {
     "info": "情報",

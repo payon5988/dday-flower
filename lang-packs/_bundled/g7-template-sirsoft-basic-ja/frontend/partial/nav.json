@@ -9,5 +9,11 @@
   "register": "会員登録",
   "logout": "ログアウト",
   "more": "もっと見る",
-  "loading": "読み込み中..."
+  "loading": "読み込み中...",
+  "flower_premium": "フラワー館",
+  "flower_bouquet": "花束",
+  "flower_basket": "フラワーバスケット",
+  "flower_plant": "鉢植え・植物",
+  "flower_wreath": "花輪・弔花",
+  "flower_subscription": "定期便"
 }

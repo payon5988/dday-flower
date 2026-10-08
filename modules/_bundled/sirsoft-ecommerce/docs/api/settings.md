@@ -454,7 +454,6 @@ HTTP/1.1 200
 | language_currency | body | array | 아니오 | — | 통화 설정 섹션 (기본 통화·통화 목록: 코드·다국어명·환율·반올림 규칙·통화별 로케일) |
 | language_currency.default_currency | body | string | 아니오 | max 10 | 쇼핑몰 기본(base) 통화 코드. 상품/주문이 1건이라도 생성된 뒤에는 변경 불가 |
 | language_currency.currencies | body | array | 아니오 | — | 등록 통화 목록. 항목별 `code`(ISO 4217 3자리 대문자, 필수)·`name`(다국어 배열, 필수)·`symbol`·`exchange_rate`·`base_unit`·`rounding_unit`·`rounding_method`(`floor`\|`round`\|`ceil`)·`decimal_places`·`is_default`·`locales` |
-| language_currency.removed_default_currencies | body | array | — | — | 서버 관리 필드. 요청에 실어 보내도 무시되며, 제출된 `currencies` 와 기본 제공 통화 목록의 차집합으로 서버가 재계산한다. `currencies` 를 보내지 않은 저장은 기존 값을 그대로 이월한다 |
 | seo | body | array | 아니오 | — | SEO 메타 설정 섹션 (페이지 유형별 메타 타이틀/설명·SEO 활성 토글) |
 | seo.meta_category_title | body | string | 아니오 | max 500 | 카테고리 페이지 메타 Title (`{commerce_name}`·`{category_name}` 등 변수 사용 가능) |
 | seo.meta_category_description | body | string | 아니오 | max 1000 | 카테고리 페이지 메타 Description |
@@ -479,8 +478,8 @@ HTTP/1.1 200
 | order_settings.banks | body | array | 아니오 | — | 무통장입금용 은행 목록. 항목별 `code`(max 10, 필수)·`name`(다국어 배열, 현재 로케일 필수) |
 | order_settings.bank_accounts | body | array | 아니오 | — | 무통장 입금 계좌 목록. 항목별 `bank_code`·`account_number`·`account_holder`(모두 필수)·`is_active`·`is_default`. 계좌가 있으면 최소 1건은 사용+기본 상태여야 함 |
 | order_settings.auto_cancel_expired | body | boolean | 아니오 | — | 입금대기 상태 주문의 자동취소 사용 여부 |
-| order_settings.auto_cancel_days | body | integer | 아니오 | min 0, max 30 | 자동취소 기한(일). 주문일 포함 이 일수 경과 시 입금대기 주문을 자동 취소 |
-| order_settings.pending_order_expire_minutes | body | integer | 아니오 | min 0, max 20160 | 결제 미완료 주문 만료 기준(분). 결제창까지 갔으나 결제가 성립하지 않은 주문을 이 시간 경과 후 자동 취소. `0` 이면 그 부류를 정리하지 않음 |
+| order_settings.auto_cancel_days | body | integer | 예 | min 1, max 30 | 자동취소 기한(일). 주문일 포함 이 일수 경과 시 입금대기 주문을 자동 취소 |
+| order_settings.pending_order_expire_minutes | body | integer | 예 | min 0, max 20160 | 결제 미완료 주문 만료 기준(분). 결제창까지 갔으나 결제가 성립하지 않은 주문을 이 시간 경과 후 자동 취소. `0` 이면 그 부류를 정리하지 않음 |
 | order_settings.cart_expiry_days | body | integer | 아니오 | min 1, max 365 | 장바구니 보관기간(일). 경과 시 담긴 상품 자동 삭제 |
 | order_settings.stock_restore_on_cancel | body | boolean | 아니오 | — | 주문 취소 시 차감된 재고 자동 복구 여부 (반품/교환에도 적용) |
 | order_settings.confirmable_statuses | body | array | 아니오 | — | 사용자가 구매확정할 수 있는 주문 옵션 상태 목록 (`payment_complete`, `shipping_hold`, `preparing`, `shipping_ready`, `shipping`, `delivered` 중 선택) |
@@ -556,6 +555,7 @@ Content-Type: application/json
     "basic_info.privacy_officer_email": "user@example.com",
     "basic_info.mail_order_number": "예시값",
     "basic_info.telecom_number": "예시값",
+    "basic_info.public_asset_disk": "예시값",
     "language_currency": [
         "예시값"
     ],
@@ -600,7 +600,7 @@ Content-Type: application/json
     ],
     "order_settings.auto_cancel_expired": true,
     "order_settings.auto_cancel_days": 1,
-    "order_settings.pending_order_expire_minutes": 1440,
+    "order_settings.pending_order_expire_minutes": 1,
     "order_settings.cart_expiry_days": 1,
     "order_settings.stock_restore_on_cancel": true,
     "order_settings.confirmable_statuses": [
@@ -1045,6 +1045,7 @@ HTTP/1.1 200
 - 주문 시점 고정: 주문 생성 시 `mileage_policy_snapshot.rule` 에 함께 기록되며, 부분취소·추가결제 재계산은 현재 설정이 아니라 이 스냅샷을 사용합니다. 그렇지 않으면 이후 설정 변경이 과거 주문에 소급돼, 취소하지 않은 잔여분의 적립액이 취소 처리만으로 달라집니다
 - 값이 없는 경우(이 필드 도입 이전 설치본·주문): 기본값 `1` / `floor` 로 해석되며 이는 도입 이전 동작과 동일한 금액을 산출합니다
 - 통화 환산 절사(`language_currency.currencies.*.rounding_unit` / `rounding_method`)와는 별개입니다 — 그쪽은 외화 표시 환산에만 적용되어 기본 통화에는 적용되지 않으므로 적립 규칙으로 쓸 수 없습니다
+
 
 ### PUT /api/modules/sirsoft-ecommerce/admin/settings/banks
 <!-- @generated:start:api.modules.sirsoft-ecommerce.admin.settings.store-banks -->

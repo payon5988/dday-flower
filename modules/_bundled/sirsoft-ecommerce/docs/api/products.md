@@ -8,60 +8,11 @@
 
 ```text
 1. 이 문서는 실제 API 호출로 실측한 Products 엔드포인트 레퍼런스입니다
-2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(curl) + 실측 응답 필드 표 + 응답 예시(envelope)
+2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(raw HTTP) + 실측 응답 필드 표 + 응답 예시(envelope)
 3. 응답 필드의 예시값·응답 예시 JSON 은 실제 호출 응답에서 관측된 값입니다
 4. 갱신: 코드 변경 후 php artisan api:docgen 재실행
 5. 설명(TODO) 칸은 사람이 채웁니다
 ```
-
----
-
-## 옵션의 무게·부피 (`options[].weight` / `options[].volume`)
-
-옵션 리소스(`ProductOptionResource`)는 배송비 계산에 쓰이는 물성 두 개를 함께 내려보냅니다.
-
-| 필드 | 타입 | 단위 | 설명 |
-| --- | --- | --- | --- |
-| weight | number\|null | g (그램) | 옵션 1개의 무게. 미입력이면 `null` |
-| volume | number\|null | cm³ (세제곱센티미터) | 옵션 1개의 부피. 미입력이면 `null` |
-
-단위는 저장 단위 그대로입니다. 배송정책의 구간·단위값은 kg / L 로 입력받으며, 환산은
-배송비를 계산하는 시점에 한 번만 수행됩니다 (`docs/api/shipping-policies.md` 참고).
-
-`null` 과 `0` 은 구분됩니다 — `null` 은 미입력, `0` 은 "무게 없음"입니다. 수정 요청은
-전달된 필드만 반영하므로, 편집 화면이 이 값을 받지 못한 채 저장하면 기존 값이 그대로
-유지되지만 화면에 `0` 으로 그려 놓고 저장하면 실측값이 0 으로 덮어써집니다.
-
-주문 생성 시 이 값은 주문 옵션(`unit_weight`/`unit_volume`)에 g / cm³ 그대로 복사되고,
-주문의 `total_weight`/`total_volume` 은 옵션 소계의 합입니다.
-
----
-
-## 목록 응답의 총 건수와 페이지 이동
-
-상품 목록(관리자·공개 양쪽)은 총 건수를 상한까지만 셉니다. 상한을 넘으면 응답의
-`pagination` 에 정확도가 함께 실립니다 — `total_relation` 이 `at_least`, `total_is_exact`
-가 `false`, `result_cap` 이 적용된 상한값입니다. 이때 `last_page` 는 `null` 이고,
-`has_more_pages` 는 그대로 정확하므로 마지막 페이지 점프만 감춰지고 다음 페이지 이동은
-끝까지 열려 있습니다. 상한 이하이면 종전과 동일하게 `total` 이 정확한 값이고
-`total_relation` 은 `exact` 입니다.
-
-같은 규약이 이 모듈의 다른 목록 응답(주문·쿠폰·마일리지·문의·리뷰 등)에도 적용됩니다.
-상세 규약은 [pagination.md](../../../../../docs/backend/pagination.md) 를 참고하세요.
-
-## 목록 응답의 리뷰 통계
-
-`review_count` 와 `rating_avg` 는 상품 표에 저장된 값이 아니라 조회 시 함께 계산되는 집계입니다.
-따라서 **그 계산을 수행하는 조회에서만 응답에 실립니다.**
-
-| 조회 | 리뷰 통계 |
-| --- | --- |
-| 공개 상품 목록 · 인기 · 신상품 · 최근 본 상품 · 상품 검색 | 실림 |
-| 관리자 상품 목록 | 실리지 않음 (화면이 사용하지 않습니다) |
-
-리뷰가 한 건도 없는 상품은 계산이 수행된 조회에서 `review_count: 0` · `rating_avg: 0.0` 으로
-실립니다. 계산하지 않은 조회에서 두 항목이 **아예 빠지는 것**과는 다릅니다 — 값이 0 인 것과
-값이 없는 것을 구분해야 하므로, 항목이 없을 때를 0 으로 간주하지 마세요.
 
 ---
 
@@ -94,7 +45,7 @@
 | min_stock | query | integer | 아니오 | — | 재고 범위 필터 하한 (재고 수량이 이 값 이상) |
 | max_stock | query | integer | 아니오 | — | 재고 범위 필터 상한 (재고 수량이 이 값 이하) |
 | shipping_policy_id | query | integer | 아니오 | — | shipping policy 식별자 |
-| with_options | query | boolean | 아니오 | 기본 `false` | 옵션 배열(`options`)을 응답에 포함할지. 기본값에서는 옵션 상세 대신 집계(`options_count`/`options_total_count`/`option_stock_sum`)만 내려갑니다. 화면은 행을 펼칠 때 별도 배치 조회를 씁니다 |
+| with_options | query | boolean | 아니오 | — | 옵션 배열(`options`)을 응답에 포함할지. 기본값에서는 옵션 상세 대신 집계(`options_count`/`options_total_count`/`option_stock_sum`)만 내려갑니다. 화면은 행을 펼칠 때 별도 배치 조회를 씁니다 |
 | sort_by | query | string | 아니오 | `created_at`, `updated_at`, `selling_price`, `stock_quantity`, `name` | 정렬 기준 필드명 |
 | sort_order | query | string | 아니오 | `asc`, `desc` | 정렬 방향 (asc 오름차순 / desc 내림차순) |
 | per_page | query | integer | 아니오 | min 10, max 100 | 페이지당 항목 수 |
@@ -128,7 +79,7 @@ _목록 응답: `data.data[]` 배열 항목의 필드 + `data.pagination`._
 | list_price_formatted | string | `200,000원` | `list_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
 | selling_price | integer | `169000` | 판매가 (기본통화 자릿수로 정규화된 값) |
 | selling_price_formatted | string | `169,000원` | `selling_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
-| discount_rate | number | `15.5` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
+| discount_rate | integer | `14` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
 | multi_currency_list_price | object | `{"KRW":{"price":200000,"formatted":"200,000원","is_default…` | 통화별 정가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 정가) |
 | multi_currency_selling_price | object | `{"KRW":{"price":169000,"formatted":"169,000원","is_default…` | 통화별 판매가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 판매가) |
 | stock_quantity | integer | `213` | 재고 수량 (옵션 사용 시 옵션 재고 합계) |
@@ -152,8 +103,6 @@ _목록 응답: `data.data[]` 배열 항목의 필드 + `data.pagination`._
 | has_options | boolean | `true` | options 여부 |
 | options_count | integer | `9` | options 개수 (집계) |
 | options_total_count | integer | `9` | options total 개수 (집계) |
-| review_count | integer | `0` | review 개수 (집계) |
-| rating_avg | integer | `0` | 평균 별점 (공개 리뷰 별점 평균, 소수 1자리 반올림) |
 | created_at | string | `2026-07-30 23:36:17` | 생성 일시 |
 | updated_at | string | `2026-08-05 07:27:04` | 최종 수정 일시 |
 | is_owner | boolean | `false` | 현재 인증 사용자가 이 리소스의 소유자인지 여부 (BaseApiResource 표준 메타) |
@@ -1466,6 +1415,100 @@ HTTP/1.1 200
 **설명** 상품 이미지 1건을 삭제합니다. `auth:sanctum` + `sirsoft-ecommerce.products.update` 권한이 필요하며, `ProductImageService::delete()`가 `id`에 해당하는 이미지 레코드와 저장 파일을 제거합니다. 임시 업로드 이미지와 상품에 귀속된 이미지 모두 삭제할 수 있으며, 해당 이미지가 없으면 404를 반환합니다.
 
 
+### POST /api/modules/sirsoft-ecommerce/admin/products/import
+<!-- @generated:start:api.modules.sirsoft-ecommerce.admin.products.import -->
+- **라우트명**: `api.modules.sirsoft-ecommerce.admin.products.import`
+- **컨트롤러**: `Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductImportController@import`
+- **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.products.create`
+
+**요청 파라미터**
+
+| 이름 | 위치 | 타입 | 필수 | 허용값 | 용도 |
+| --- | --- | --- | --- | --- | --- |
+| file | body | file | 예 | max 2048 | 업로드 파일 |
+| dry_run | body | boolean | 아니오 | — | <!-- TODO: 용도 --> |
+
+**요청 예시**
+
+```http
+POST /api/modules/sirsoft-ecommerce/admin/products/import HTTP/1.1
+Host: api.example.com
+Accept: application/json
+Authorization: Bearer {YOUR_TOKEN}
+Content-Type: multipart/form-data; boundary=----G7ExampleBoundary
+
+------G7ExampleBoundary
+Content-Disposition: form-data; name="file"; filename="example.pdf"
+Content-Type: application/octet-stream
+
+(바이너리 파일 내용)
+------G7ExampleBoundary
+Content-Disposition: form-data; name="dry_run"
+
+1
+------G7ExampleBoundary--
+```
+
+**응답 필드** (`data` 내부)
+
+<!-- 실측 제외: side-effectful-write — 응답 필드는 사람이 작성하세요. -->
+
+**응답 예시**
+
+<!-- 실측 제외: side-effectful-write — 응답 예시는 사람이 작성하세요. -->
+
+**에러 응답**
+
+| 상태코드 | 의미 | 발생 조건 |
+| --- | --- | --- |
+| 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
+| 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.create`)이 없는 경우 |
+| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
+
+<!-- @generated:end -->
+
+**설명** <!-- TODO: 이 엔드포인트의 용도·주의사항·예시 시나리오를 작성하세요 -->
+
+
+### GET /api/modules/sirsoft-ecommerce/admin/products/import/sample
+<!-- @generated:start:api.modules.sirsoft-ecommerce.admin.products.import.sample -->
+- **라우트명**: `api.modules.sirsoft-ecommerce.admin.products.import.sample`
+- **컨트롤러**: `Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductImportController@sample`
+- **인증/권한**: `auth:sanctum` + `permission:sirsoft-ecommerce.products.read`
+
+**요청 파라미터**
+
+_요청 파라미터 없음._
+
+**요청 예시**
+
+```http
+GET /api/modules/sirsoft-ecommerce/admin/products/import/sample HTTP/1.1
+Host: api.example.com
+Accept: application/json
+Authorization: Bearer {YOUR_TOKEN}
+```
+
+**응답 필드** (`data` 내부)
+
+<!-- 실측 제외: http-200 — 응답 필드는 사람이 작성하세요. -->
+
+**응답 예시**
+
+<!-- 실측 제외: http-200 — 응답 예시는 사람이 작성하세요. -->
+
+**에러 응답**
+
+| 상태코드 | 의미 | 발생 조건 |
+| --- | --- | --- |
+| 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
+| 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.read`)이 없는 경우 |
+
+<!-- @generated:end -->
+
+**설명** <!-- TODO: 이 엔드포인트의 용도·주의사항·예시 시나리오를 작성하세요 -->
+
+
 ### GET /api/modules/sirsoft-ecommerce/admin/products/options
 <!-- @generated:start:api.modules.sirsoft-ecommerce.admin.products.options -->
 - **라우트명**: `api.modules.sirsoft-ecommerce.admin.products.options`
@@ -2201,7 +2244,7 @@ HTTP/1.1 200
 **요청 예시**
 
 ```http
-GET /api/modules/sirsoft-ecommerce/admin/products/{product}/copy HTTP/1.1
+GET /api/modules/sirsoft-ecommerce/admin/products/{product}/copy?copy_images=1&copy_options=1&copy_categories=1&copy_sales_info=1&copy_description=1&copy_notice=1&copy_common_info=1&copy_other_info=1&copy_shipping=1&copy_seo=1&copy_identification=1 HTTP/1.1
 Host: api.example.com
 Accept: application/json
 Authorization: Bearer {YOUR_TOKEN}
@@ -2282,8 +2325,8 @@ HTTP/1.1 200
 | --- | --- | --- |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
 | 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.read`)이 없는 경우 |
-| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 | 404 | Not Found | path 파라미터에 해당하는 리소스가 없는 경우 |
+| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 
 <!-- @generated:end -->
 
@@ -2349,7 +2392,7 @@ _단건 응답: `data` 객체의 필드._
 | max_purchase_qty | integer | `0` | 최대 구매 수량 (0=무제한) |
 | purchase_restriction | string | `none` | 구매 제한: none(없음), restricted(제한) |
 | allowed_roles | array | `[]` | 구매 허용 역할 ID 배열 |
-| meta_title | null | `null` | SEO 제목 (다국어 JSON) |
+| meta_title | object | `{"ko":"이슬 맺힌 장미 꽃다발","en":"Dew Rose Bouquet"}` | SEO 제목 (다국어 JSON) |
 | meta_description | object | `{"ko":"면 손수건 3매입 #1 의 직접 입력 SEO 설명입니다.","en":"Custom SEO …` | SEO 설명 (다국어 JSON) |
 | seo_tags | array | `[]` | SEO 태그 목록 (메타 키워드 등 검색엔진 노출용 태그) |
 | seo_sync_title | boolean | `true` | SEO 제목 동기화 여부 (1: 상품명으로 자동 채움, 0: 직접 입력 보존) |
@@ -2413,7 +2456,7 @@ HTTP/1.1 200
 **요청 예시**
 
 ```http
-GET /api/modules/sirsoft-ecommerce/admin/products/{product}/logs HTTP/1.1
+GET /api/modules/sirsoft-ecommerce/admin/products/{product}/logs?per_page=1&sort_order=%EC%98%88%EC%8B%9C%EA%B0%92 HTTP/1.1
 Host: api.example.com
 Accept: application/json
 Authorization: Bearer {YOUR_TOKEN}
@@ -2435,7 +2478,7 @@ _목록 응답: `data.data[]` 배열 항목의 필드._
 | action_label | string | `추가` | `action` 값의 사람이 읽는 라벨 (현지화/Enum 파생) |
 | localized_description | string | `위시리스트 추가 (면 손수건 3매입 #1)` | `description` 의 현재 로케일 해석 값 (다국어 필드를 표시용 문자열로 해석) |
 | description_key | string | `sirsoft-ecommerce::activity_log.descr…` | 설명 번역 키 (localized_description 을 생성하는 다국어 키) |
-| properties | null | `null` | 로그 부가 속성 (액션에 첨부된 임의 메타데이터, 없으면 null) |
+| properties | object | `{"extension_origin":"sirsoft-ecommerce"}` | 로그 부가 속성 (액션에 첨부된 임의 메타데이터, 없으면 null) |
 | changes | array | `[{"field":"selling_price","label_key":"sirsoft-ecommerce:…` | 단일 수정 변경 내역 (각 항목: field·label·old·new, 일괄 수정 로그면 null) |
 | bulk_changes | null | `null` | 일괄 수정 변경 내역 (각 항목: model_id·changes 배열, 단일 수정 로그면 null) |
 | has_changes | boolean | `false` | changes 여부 |
@@ -2586,8 +2629,8 @@ HTTP/1.1 200
 | --- | --- | --- |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
 | 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.products.read`)이 없는 경우 |
-| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 | 404 | Not Found | path 파라미터에 해당하는 리소스가 없는 경우 |
+| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 
 <!-- @generated:end -->
 
@@ -2641,7 +2684,7 @@ _목록 응답: `data.data[]` 배열 항목의 필드 + `data.pagination`._
 | list_price_formatted | string | `200,000원` | `list_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
 | selling_price | integer | `169000` | 판매가 (기본통화 자릿수로 정규화된 값) |
 | selling_price_formatted | string | `169,000원` | `selling_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
-| discount_rate | number | `15.5` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
+| discount_rate | integer | `14` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
 | multi_currency_list_price | object | `{"KRW":{"price":200000,"formatted":"200,000원","is_default…` | 통화별 정가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 정가) |
 | multi_currency_selling_price | object | `{"KRW":{"price":169000,"formatted":"169,000원","is_default…` | 통화별 판매가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 판매가) |
 | stock_quantity | integer | `213` | 재고 수량 (옵션 사용 시 옵션 재고 합계) |
@@ -2771,7 +2814,7 @@ Authorization: Bearer {YOUR_TOKEN}   (optional.sanctum: 비회원은 헤더 생�
 | list_price_formatted | string | `200,000원` | `list_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
 | selling_price | integer | `169000` | 판매가 (기본통화 자릿수로 정규화된 값) |
 | selling_price_formatted | string | `169,000원` | `selling_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
-| discount_rate | number | `15.5` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
+| discount_rate | integer | `14` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
 | multi_currency_list_price | object | `{"KRW":{"price":200000,"formatted":"200,000원","is_default…` | 통화별 정가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 정가) |
 | multi_currency_selling_price | object | `{"KRW":{"price":169000,"formatted":"169,000원","is_default…` | 통화별 판매가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 판매가) |
 | stock_quantity | integer | `213` | 재고 수량 (옵션 사용 시 옵션 재고 합계) |
@@ -3053,6 +3096,8 @@ Authorization: Bearer {YOUR_TOKEN}   (optional.sanctum: 비회원은 헤더 생�
 
 **응답 필드** (`data` 내부)
 
+
+
 _목록 응답: `data[]` 배열 항목의 필드 (`ProductListResource` — `GET /products/new` 와 동일 구성). `ids` 가 비어 있으면 `data` 는 빈 배열입니다._
 
 | 필드 | 타입 | 실측 예시값 | 용도/설명 |
@@ -3163,7 +3208,7 @@ _단건 응답: `data` 객체의 필드._
 | list_price_formatted | string | `5,000원` | `list_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
 | selling_price | integer | `3000` | 판매가 (기본통화 기준) |
 | selling_price_formatted | string | `3,000원` | `selling_price` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
-| discount_rate | integer | `40` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
+| discount_rate | number | `16.9` | 할인율(%) (정가 대비 판매가 할인 비율, (1 - 판매가/정가) × 100) |
 | multi_currency_list_price | object | `{"KRW":{"price":5000,"formatted":"5,000원","is_default":tr…` | 통화별 정가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 정가) |
 | multi_currency_selling_price | object | `{"KRW":{"price":3000,"formatted":"3,000원","is_default":tr…` | 통화별 판매가 맵 (통화코드 → {price, formatted, is_default, editable}, 설정된 모든 통화의 환산 판매가) |
 | stock_quantity | integer | `26` | 재고 수량 (옵션 있으면 옵션 합계) |
@@ -3187,7 +3232,7 @@ _단건 응답: `data` 객체의 필드._
 | description_mode | string | `text` | 설명 모드: text(텍스트), html(HTML) |
 | images | array | `[{"id":7,"hash":"7df7761cdf16","original_filename":"produ…` | 상품 이미지 목록 (각 항목: hash·url·alt_text·is_thumbnail·sort_order 등, images 관계 로드 시) |
 | thumbnail_url | string | `/api/modules/sirsoft-ecommerce/produc…` | 대표 이미지 다운로드 URL — 상품 이미지가 없으면 상세설명의 첫 내부 이미지 URL 로 폴백한다(외부 주소 이미지는 제외 — 1.2.0+) |
-| meta_title | null | `null` | SEO 제목 (다국어 JSON) |
+| meta_title | object | `{"ko":"이슬 맺힌 장미 꽃다발","en":"Dew Rose Bouquet"}` | SEO 제목 (다국어 JSON) |
 | meta_description | object | `{"ko":"면 손수건 3매입 #1 의 직접 입력 SEO 설명입니다.","en":"Custom SEO …` | SEO 설명 (다국어 JSON) |
 | meta_keywords | null | `null` | SEO 키워드 (배열) |
 | has_options | boolean | `true` | options 여부 |
@@ -3423,7 +3468,7 @@ HTTP/1.1 200
 **요청 예시**
 
 ```http
-GET /api/modules/sirsoft-ecommerce/products/{product}/inquiries HTTP/1.1
+GET /api/modules/sirsoft-ecommerce/products/{product}/inquiries?page=1&per_page=1&exclude_secret=1 HTTP/1.1
 Host: api.example.com
 Accept: application/json
 Authorization: Bearer {YOUR_TOKEN}   (optional.sanctum: 비회원은 헤더 생략 가능)
@@ -3516,8 +3561,8 @@ HTTP/1.1 200
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
 | 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.user-products.read`)이 없는 경우 |
-| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 | 404 | Not Found | path 파라미터에 해당하는 리소스가 없는 경우 |
+| 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) |
 
 <!-- @generated:end -->
 
@@ -3535,9 +3580,9 @@ HTTP/1.1 200
 | 이름 | 위치 | 타입 | 필수 | 허용값 | 용도 |
 | --- | --- | --- | --- | --- | --- |
 | product | path | string | 예 | — | 대상 product의 식별자 |
-| title | body | string | 아니오 | min 2, max 200 | 제목 |
+| title | body | string | 아니오 | — | 제목 |
 | category | body | string | 아니오 | — | 문의 분류 (게시판 설정에 정의된 카테고리, 미지정 시 기본값) |
-| content | body | string | 예 | min 10, max 10000 | 본문 내용 |
+| content | body | string | 예 | — | 본문 내용 |
 | is_secret | body | boolean | 아니오 | — | secret 여부 |
 | temp_key | body | string | 아니오 | — | 첨부파일 임시 업로드 키 (사전 업로드한 첨부를 이 문의에 연결) |
 

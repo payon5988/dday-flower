@@ -478,7 +478,7 @@ _단건 응답: `data` 객체의 필드._
 | total_due_amount_formatted | string | `¥0` | `total_due_amount` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
 | total_due_charge_amount | integer | `0` | **결제 통화(`payment_currency`) 기준 실청구액**, 최소 화폐단위 정수 (KRW ×1 / 소수통화 ×10^n). `total_due_amount` 는 base 통화 금액이므로 base≠결제 통화면 값이 다릅니다. 무통장 입금확인이 검증하는 금액이 이 값이며, 화면은 이 값을 그대로 입금액으로 보내야 합니다 |
 | total_due_charge_amount_formatted | string | `0원` | `total_due_charge_amount` 를 결제 통화 기호로 표기한 문자열 |
-| depositor_name | null | `null` | 무통장 입금자명 (입금확인 모달 기본값, payment 관계 로드 시에만 노출) |
+| depositor_name | string | `김주문` | 무통장 입금자명 (입금확인 모달 기본값, payment 관계 로드 시에만 노출) |
 | total_cancelled_amount | integer | `0` | 총 취소금액 |
 | total_cancelled_amount_formatted | string | `¥0` | `total_cancelled_amount` 값의 표시용 포맷 문자열 (통화/용량/일시 등 로케일·단위 포맷) |
 | total_refunded_amount | integer | `0` | 총 환불금액 |
@@ -542,7 +542,7 @@ _단건 응답: `data` 객체의 필드._
 | recipient_tel | null | `null` | 수령인 일반전화 (배송지에서 플래튼, 미입력 시 null) |
 | recipient_zipcode | string | `25530` | 수령인 우편번호 (배송지에서 플래튼) |
 | recipient_address | string | `경상남도 광주시 선릉로 768` | 수령인 기본 주소 (배송지에서 플래튼) |
-| recipient_detail_address | null | `null` | 수령인 상세 주소 (배송지에서 플래튼, 미입력 시 null) |
+| recipient_detail_address | string | `101호` | 수령인 상세 주소 (배송지에서 플래튼, 미입력 시 null) |
 | delivery_memo | string | `parcel_box` | 배송 메모 (배송지에서 플래튼, 미입력 시 null) |
 | delivery_memo_label | string | `택배함에 넣어주세요` | `delivery_memo` 값의 사람이 읽는 라벨 (현지화/Enum 파생) |
 | options | array | `[{"id":1263,"option_status":"payment_complete","option_st…` | 주문 옵션(품목) 목록 (OrderOptionResource — 상품·옵션·수량·옵션상태·금액) |
@@ -552,13 +552,10 @@ _단건 응답: `data` 객체의 필드._
 | payments | array | `[{"id":1,"payment_status":"paid","payment_status_label":"…` | 결제 이력 목록 (OrderPaymentResource 배열 — 다회 결제/부분결제 포함) |
 | cash_receipt | null | `null` | 현재 유효한 현금영수증 (CashReceiptResource — 취소되지 않은 발급 건, 없으면 null) |
 | cash_receipts | array | `[]` | 현금영수증 발급·취소 이력 전체 (CashReceiptResource 배열 — 취소된 건 포함) |
-
-> `CashReceiptResource` 의 `amount`/`tax_free_amount` 는 **결제 통화 기준 실청구액**입니다 (구매자가 실제로 낸 금액으로 세금 증빙이 발행되어야 하므로). `amount_formatted` 도 결제 통화 기호로 표기합니다.
 | shippings | array | `[]` | 배송 이력 목록 (OrderShippingResource 배열 — 배송유형·택배사·송장번호) |
 | cancels | array | `[]` | 취소 이력 목록 (OrderCancelResource 배열 — 취소 사유·상세·취소일시, 최근순) |
 | promotions_applied_snapshot | object | `{"coupon_issue_ids":[7330],"item_coupons":[],"discount_co…` | 적용된 프로모션 스냅샷 (재계산용) |
 | shipping_policy_applied_snapshot | object | `{"items": [], "address": {}}` | 적용된 배송정책 스냅샷 (재계산용). `items` 는 옵션별 적용 정책 목록(각 항목: `product_option_id`, `policy`), `address` 는 주문 시점 배송지 메타(`country_code`, `zipcode`). 항목이 없어도 `items` 는 빈 배열이다 |
-| shipping_policy_applied_snapshot (비회원 응답) | object | `{"items": [{"product_option_id": 481, "policy": {"policy_name": "국내 무료배송", "standalone_shipping_amount": 0, "standalone_shipping_amount_formatted": "무료배송"}}]}` | 비로그인(비회원 조회 토큰) 응답은 **표시용 필드만** 내보낸다 — `policy_name` · `standalone_shipping_amount(_formatted)`. 정책 id·계산 근거와 배송지 메타(`address`)는 제외된다. 비회원 주문 상세 화면이 회원과 같은 partial 로 상품별 정책명·개별 배송비를 그리므로 필드 자체를 빼면 그 줄만 오류 없이 사라진다 |
 | admin_memo | null | `null` | 관리자 메모 (내부 관리용) |
 | customer_memo | null | `null` | 고객 메모 (주문 시 고객이 남긴 메모) |
 | created_at | string | `2026-07-30T14:36:22+00:00` | 생성 일시 |
@@ -1023,7 +1020,7 @@ HTTP/1.1 200
 
 **① 사전 가드**(`resolveIssueBlocker`) — 프로바이더 호출 전에 판정하며 코드 6종이 고정입니다.
 
-| error_code | 상태코드 | 의미 |
+| error_code | 상태코드 | 실패 사유 코드 (성공 시 `null`) |
 | --- | --- | --- |
 | `ALREADY_ISSUED` | 409 | 이미 활성 현금영수증이 발급된 주문 |
 | `PROVIDER_NOT_CONFIGURED` | 422 | 현금영수증 발급 프로바이더가 설정되지 않음 |
@@ -1870,13 +1867,7 @@ HTTP/1.1 200
 | page | query | integer | 아니오 | min 1 | 조회할 페이지 번호 (1부터 시작) |
 | per_page | query | integer | 아니오 | min 1, max 50 | 페이지당 항목 수 |
 | status | query | string | 아니오 | — | 상태 필터 (해당 상태의 항목만 조회) |
-| with_items | query | boolean | 아니오 | 기본 `false` | 주문 아이템 전량을 포함할지. 기본값에서는 대표 아이템 1건과 전체 개수(`item_count`)만 내려갑니다. 주문마다 상품을 전부 나열하는 화면만 켜세요 |
-
-**목록은 경량 표현입니다.**
-
-기본 응답의 `items[]` 에는 대표 아이템 1건만 담기고, 전체 개수는 `item_count` 로 제공됩니다. 아이템이 없는 주문은 빈 배열입니다. 주문마다 상품을 전부 나열해야 하는 화면은 `with_items=1` 로 전량을 요청하세요 — 그렇지 않은 호출자까지 주문 수 × 아이템 수를 받지 않게 하려는 기본값입니다.
-
-부분취소 뱃지(`is_partially_cancelled`)는 아이템 전량 없이도 정확합니다. 서버가 집계로 판정하므로 두 경로의 값이 같습니다.
+| with_items | query | boolean | 아니오 | — | 주문 아이템 전량을 포함할지. 기본값에서는 대표 아이템 1건과 전체 개수(`item_count`)만 내려갑니다. 주문마다 상품을 전부 나열하는 화면만 켜세요 |
 
 **요청 예시**
 
@@ -2013,7 +2004,6 @@ HTTP/1.1 200
 | dbank.bank_name | body | string | 아니오 | max 50 | 수동 무통장입금 계좌의 은행명 (표시용) |
 | dbank.account_number | body | string | 아니오 | max 50 | 수동 무통장입금 입금 계좌번호 (`payment_method=dbank` 이면 필수) |
 | dbank.account_holder | body | string | 아니오 | max 50 | 수동 무통장입금 계좌 예금주 (`payment_method=dbank` 이면 필수) |
-| dbank.due_days | body | integer | 아니오 | min 1, max 30 | 입금 기한 일수 (주문일로부터 며칠 이내 입금, 1~30일) |
 | save_shipping_address | body | boolean | 아니오 | — | 회원 주소록에 이번 배송지 저장 여부 (회원 주문 한정) |
 | cash_receipt_requested | body | boolean | 아니오 | — | 현금영수증 신청 여부 (true 면 아래 3개 필드가 필수) |
 | cash_receipt_type | body | string | 아니오 | — | 발급 용도 (`income` 소득공제 / `expense` 지출증빙) |
@@ -2061,7 +2051,6 @@ Content-Type: application/json
     "dbank.bank_name": "예시 이름",
     "dbank.account_number": "예시값",
     "dbank.account_holder": "예시값",
-    "dbank.due_days": 1,
     "save_shipping_address": true,
     "cash_receipt_requested": true,
     "cash_receipt_type": "예시값",
@@ -2156,8 +2145,8 @@ HTTP/1.1 201
 | --- | --- | --- |
 | 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.user-orders.create`)이 없는 경우 |
 | 404 | Not Found | 임시 주문(주문서)이 없거나 만료된 경우 (`주문서를 찾을 수 없습니다.` 계열 — `exceptions.temp_order_not_found`) |
-| 422 | Unprocessable Entity | 요청 파라미터 검증 실패, 예상 결제금액 불일치(`expected_total_amount` ≠ 서버 재계산값), 결제 통화 미지원(`errors.code = unsupported_payment_currency`), 재고 부족(`errors.insufficient_items`), 구매 불가 상품(`errors.code = cart_unavailable`), 주문 확정 재계산 검증 실패(쿠폰 만료·최소주문금액 미달 등 — `errors.code = order_calculation_validation_failed`). `payment_method` 가 결제수단 카탈로그에 없는 값이면 여기서 차단된다 |
 | 409 | Conflict | 적용한 쿠폰을 다른 주문이 먼저 사용한 경우 (`errors.code = coupon_already_used`, `errors.coupon_issue_id` 에 해당 발급 ID). 주문은 생성되지 않고 쿠폰도 소모되지 않으므로 그대로 재시도할 수 있습니다 |
+| 422 | Unprocessable Entity | 요청 파라미터 검증 실패, 예상 결제금액 불일치(`expected_total_amount` ≠ 서버 재계산값), 결제 통화 미지원(`errors.code = unsupported_payment_currency`), 재고 부족(`errors.insufficient_items`), 구매 불가 상품(`errors.code = cart_unavailable`), 주문 확정 재계산 검증 실패(쿠폰 만료·최소주문금액 미달 등 — `errors.code = order_calculation_validation_failed`). `payment_method` 가 결제수단 카탈로그에 없는 값이면 여기서 차단된다 |
 | 428 | Identity Verification Required | 결제 진입 본인인증(IDV) 정책이 활성이고 미인증(grace 만료)인 경우 |
 | 500 | Server Error | 주문 생성 중 예기치 못한 오류 (`주문 생성에 실패했습니다.`) |
 
@@ -2915,8 +2904,8 @@ HTTP/1.1 200
 | recipient_name | body | string | 아니오 | max 50 | 수령인 이름 |
 | recipient_phone | body | string | 아니오 | max 20 | 수령인 연락처 |
 | country_code | body | string | 아니오 | — | 국가 코드 (ISO 3166-1 alpha-2) |
-| zipcode | body | string | 아니오 | max 10 | 우편번호 |
-| address | body | string | 아니오 | max 255 | 기본 주소 |
+| zipcode | body | string | 예 | max 10 | 우편번호 |
+| address | body | string | 예 | max 255 | 기본 주소 |
 | address_detail | body | string | 아니오 | max 255 | 상세 주소 |
 | address_line_1 | body | string | 아니오 | max 255 | 주소 1행 (기본 주소) |
 | address_line_2 | body | string | 아니오 | max 255 | 주소 2행 (상세 주소) |

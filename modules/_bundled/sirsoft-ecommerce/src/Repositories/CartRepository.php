@@ -187,6 +187,8 @@ class CartRepository implements CartRepositoryInterface
     }
 
     /**
+     * 장바구니 총 수량을 반환합니다 (행 개수가 아니라 수량 합계 — 헤더 뱃지 기준).
+     *
      * {@inheritDoc}
      */
     public function countItems(?int $userId, ?string $cartKey): int
@@ -201,7 +203,7 @@ class CartRepository implements CartRepositoryInterface
             return 0;
         }
 
-        return $query->count();
+        return (int) $query->sum('quantity');
     }
 
     /**

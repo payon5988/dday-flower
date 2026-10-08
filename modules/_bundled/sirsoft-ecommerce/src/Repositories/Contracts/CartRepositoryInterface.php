@@ -145,7 +145,7 @@ interface CartRepositoryInterface
      *
      * @param  int|null  $userId  회원 ID (null이면 비회원)
      * @param  string|null  $cartKey  비회원 장바구니 키
-     * @return int 아이템 수
+     * @return int 장바구니 총 수량 (행 개수 아님)
      */
     public function countItems(?int $userId, ?string $cartKey): int;
 

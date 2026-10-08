@@ -657,8 +657,8 @@ _단건 응답: `data` 객체의 필드 (`GuestOrderResource` — 구매확정 �
 | recipient_phone | body | string | 예 | max 20 | 수령인 연락처 |
 | recipient_tel | body | string | 아니오 | max 20 | 수령인 일반전화 (선택 연락처) |
 | country_code | body | string | 아니오 | — | 국가 코드 (ISO 3166-1 alpha-2) |
-| zipcode | body | string | 아니오 | max 10 | 우편번호 |
-| address | body | string | 아니오 | max 255 | 기본 주소 |
+| zipcode | body | string | 예 | max 10 | 우편번호 |
+| address | body | string | 예 | max 255 | 기본 주소 |
 | address_detail | body | string | 아니오 | max 255 | 상세 주소 |
 | address_line_1 | body | string | 아니오 | max 255 | 주소 1행 (기본 주소) |
 | address_line_2 | body | string | 아니오 | max 255 | 주소 2행 (상세 주소) |

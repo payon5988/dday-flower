@@ -15,6 +15,7 @@ use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\MileageTransactionControlle
 use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\OrderController;
 use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductCommonInfoController;
 use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductController as AdminProductController;
+use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductImportController;
 use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductInquiryController as AdminProductInquiryController;
 use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductLabelController;
 use Modules\Sirsoft\Ecommerce\Http\Controllers\Admin\ProductNoticeTemplateController;
@@ -899,6 +900,17 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'admin'])->group(function ()
         Route::get('/options', [AdminProductController::class, 'options'])
             ->middleware('permission:admin,sirsoft-ecommerce.products.read')
             ->name('admin.products.options');
+
+        // 상품 일괄등록(CSV) — 리터럴이므로 /{identifier} 보다 위
+        // GET /api/modules/sirsoft-ecommerce/admin/products/import/sample - 샘플 양식 다운로드
+        Route::get('/import/sample', [ProductImportController::class, 'sample'])
+            ->middleware('permission:admin,sirsoft-ecommerce.products.read')
+            ->name('admin.products.import.sample');
+
+        // POST /api/modules/sirsoft-ecommerce/admin/products/import - CSV 검증·등록 (?dry_run=1 검증만)
+        Route::post('/import', [ProductImportController::class, 'import'])
+            ->middleware('permission:admin,sirsoft-ecommerce.products.create')
+            ->name('admin.products.import');
 
         // 상품코드로 조회
         // GET /api/modules/sirsoft-ecommerce/admin/products/by-code/{code}

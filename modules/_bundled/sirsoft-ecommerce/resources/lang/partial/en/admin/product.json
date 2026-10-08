@@ -1206,5 +1206,20 @@
     "manage_common_info": "Manage Common Info",
     "manage_notice_template": "Manage Product Notices",
     "create_shipping_policy": "Create Shipping Policy"
+  },
+  "import": {
+    "title": "Bulk import from Excel",
+    "desc": "Upload a CSV file written to the template to create or update products at once. Download the sample first and edit it in Excel.",
+    "sample_btn": "Download sample",
+    "file_label": "CSV file",
+    "dry_run": "Validate only",
+    "upload_btn": "Upload",
+    "result_created": "created",
+    "result_updated": "updated",
+    "result_rows": "rows",
+    "result_errors": "row errors",
+    "close": "Close",
+    "invalid_file": "Please choose a CSV file.",
+    "result_summary": "Result: :row_count rows (:created created, :updated updated)"
   }
 }

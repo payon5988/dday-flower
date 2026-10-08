@@ -8,7 +8,7 @@
 
 ```text
 1. 이 문서는 실제 API 호출로 실측한 Categories 엔드포인트 레퍼런스입니다
-2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(curl) + 실측 응답 필드 표 + 응답 예시(envelope)
+2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(raw HTTP) + 실측 응답 필드 표 + 응답 예시(envelope)
 3. 응답 필드의 예시값·응답 예시 JSON 은 실제 호출 응답에서 관측된 값입니다
 4. 갱신: 코드 변경 후 php artisan api:docgen 재실행
 5. 설명(TODO) 칸은 사람이 채웁니다
@@ -877,9 +877,9 @@ HTTP/1.1 200
 
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
+| 400 | Bad Request | 해당 카테고리가 없거나(`exceptions.category_not_found`), 하위 카테고리(`exceptions.category_has_children`)·연결 상품(`exceptions.category_has_products`)이 있어 삭제가 차단된 경우 |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
 | 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.categories.delete`)이 없는 경우 |
-| 400 | Bad Request | 해당 카테고리가 없거나(`exceptions.category_not_found`), 하위 카테고리(`exceptions.category_has_children`)·연결 상품(`exceptions.category_has_products`)이 있어 삭제가 차단된 경우 |
 | 404 | Not Found | path 파라미터 형식이 라우트에 매칭되지 않는 경우 |
 | 500 | Internal Server Error | 서버 내부 오류 — 도메인 규칙 위반이 아닌 예외(인프라 장애·코드 결함)는 4xx 로 뭉개지 않고 500 으로 구분한다 |
 
@@ -1171,9 +1171,9 @@ HTTP/1.1 200
 
 | 상태코드 | 의미 | 발생 조건 |
 | --- | --- | --- |
+| 400 | Bad Request | 해당 카테고리가 없는 경우(`exceptions.category_not_found`) 또는 토글 처리 중 도메인 규칙 위반 |
 | 401 | Unauthenticated | 유효한 Bearer 토큰이 없거나 만료된 경우 |
 | 403 | Forbidden | 요구 권한(`sirsoft-ecommerce.categories.update`)이 없는 경우 |
-| 400 | Bad Request | 해당 카테고리가 없는 경우(`exceptions.category_not_found`) 또는 토글 처리 중 도메인 규칙 위반 |
 | 404 | Not Found | path 파라미터 형식이 라우트에 매칭되지 않는 경우 |
 | 500 | Internal Server Error | 서버 내부 오류 — 도메인 규칙 위반이 아닌 예외(인프라 장애·코드 결함)는 4xx 로 뭉개지 않고 500 으로 구분한다 |
 

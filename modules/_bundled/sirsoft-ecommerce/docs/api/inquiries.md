@@ -8,7 +8,7 @@
 
 ```text
 1. 이 문서는 실제 API 호출로 실측한 Inquiries 엔드포인트 레퍼런스입니다
-2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(curl) + 실측 응답 필드 표 + 응답 예시(envelope)
+2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(raw HTTP) + 실측 응답 필드 표 + 응답 예시(envelope)
 3. 응답 필드의 예시값·응답 예시 JSON 은 실제 호출 응답에서 관측된 값입니다
 4. 갱신: 코드 변경 후 php artisan api:docgen 재실행
 5. 설명(TODO) 칸은 사람이 채웁니다
@@ -187,15 +187,6 @@ _단건 응답: `data` 객체의 필드._
 | 404 | Not Found | path 파라미터에 해당하는 리소스가 없는 경우 |
 | 422 | Unprocessable Entity | 요청 파라미터가 검증 규칙을 위반한 경우 (`error.errors` 에 필드별 메시지) / 문의를 찾을 수 없거나(`문의를 찾을 수 없습니다.`) 문의 게시판이 설정되지 않은 경우(`문의 게시판이 설정되지 않았습니다.` — `board_not_configured`) / 이미 답변이 등록된 문의에 재등록을 시도한 경우(`이미 등록된 답변이 있습니다. 기존 답변을 수정하거나 삭제한 후 다시 등록해주세요.` — `reply_already_exists`) / 답변 게시글 생성에 실패한 경우(`답변 등록에 실패했습니다.`) — `ProductInquiryService::createReply()` 의 `ProductInquiryOperationException` |
 | 500 | Internal Server Error | 답변 등록 처리 중 예기치 못한 예외 (`답변 등록에 실패했습니다.`) |
-
-**오류 응답 예시** (이미 답변된 문의에 재등록 시 — 422)
-
-```json
-{
-    "success": false,
-    "message": "이미 등록된 답변이 있습니다. 기존 답변을 수정하거나 삭제한 후 다시 등록해주세요."
-}
-```
 
 <!-- @generated:end -->
 

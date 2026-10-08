@@ -8,96 +8,11 @@
 
 ```text
 1. 이 문서는 실제 API 호출로 실측한 Shipping Policies 엔드포인트 레퍼런스입니다
-2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(curl) + 실측 응답 필드 표 + 응답 예시(envelope)
+2. 각 엔드포인트: 메서드/URI/권한 + 요청 파라미터 표 + 요청 예시(raw HTTP) + 실측 응답 필드 표 + 응답 예시(envelope)
 3. 응답 필드의 예시값·응답 예시 JSON 은 실제 호출 응답에서 관측된 값입니다
 4. 갱신: 코드 변경 후 php artisan api:docgen 재실행
 5. 설명(TODO) 칸은 사람이 채웁니다
 ```
-
----
-
-## 국가별 설정(`country_settings[]`)의 검증 계약
-
-생성(`POST`)·수정(`PUT`) 요청은 같은 규칙을 공유합니다. 이 규칙들은 저장 시점에 422 로 차단되며,
-목적은 "설정은 저장됐는데 계산 결과가 조용히 0원(무료배송)이 되는" 상태를 만들지 않는 것입니다.
-
-**부과정책별 필수값**
-
-| 부과정책 | 필수 항목 | 누락 시 |
-| --- | --- | --- |
-| `range_*` (금액/수량/무게/부피/부피무게) | `ranges.tiers` 최소 1개 | 422 |
-| `per_*` (수량당/무게당/부피당/부피무게당/금액당) | `ranges.unit_value` | 422 |
-| `conditional_free` | `free_threshold` | 422 |
-| `fixed`, `conditional_free`, `per_*`, `api` | `base_fee` > 0 | 422 |
-| `api` | `api_endpoint` | 422 |
-
-`api` 정책의 `base_fee` 는 외부 API 호출이 실패했을 때 사용할 폴백 배송비입니다. 0 을 허용하면
-외부 API 장애가 그대로 무료배송이 되므로 0 을 거부합니다.
-
-**구간(`ranges.tiers[]`) 규칙**
-
-구간의 종료값(`max`)은 **포함**입니다 — `max: 5` 인 구간은 값 5까지 그 구간입니다.
-마지막 구간의 `max` 는 `null`(무제한)이어야 하고, 그 외 구간은 `max` 가 있어야 합니다.
-
-구간을 잇는 방식은 값의 성질에 따라 다릅니다.
-
-| 부과정책 | 다음 구간의 `min` | 예시 |
-| --- | --- | --- |
-| `range_quantity` (이산값) | 직전 `max` + 1 | `0~5` → `6~` |
-| `range_amount` · `range_weight` · `range_volume` · `range_volume_weight` (연속값) | 직전 `max` | `0~2` → `2~` |
-
-연속형은 소수 경계(`2.5`)를 허용하며, 비교에는 0.001 의 허용 오차를 둡니다.
-`range_quantity` 의 `min`/`max` 는 정수여야 합니다.
-첫 구간의 `min` 은 0 이어야 합니다.
-
-`min` 은 화면 표시용이며 배송비 계산에는 사용되지 않습니다. 계산은 구간을 종료값 오름차순으로
-정렬한 뒤 값이 종료값 이하인 첫 구간의 배송비를 채택합니다.
-
-**구간·단위값의 단위**
-
-상품 옵션의 무게·부피는 **g / cm³** 로 저장되고, 배송정책의 구간 경계와 `unit_value` 는
-**kg / L** 로 입력합니다. 환산은 배송비 계산 시점에 한 번만 수행됩니다.
-
-| 부과정책 | 구간/단위값 단위 |
-| --- | --- |
-| `range_quantity` · `per_quantity` | 개 |
-| `range_weight` · `range_volume_weight` · `per_weight` · `per_volume_weight` | kg |
-| `range_volume` · `per_volume` | L |
-| `range_amount` · `per_amount` | 기본 통화 금액 |
-
-부피무게는 `부피(cm³) ÷ ranges.volume_weight_divisor`(기본 6000)로 kg 을 얻고, 실무게(kg)와
-비교해 큰 값을 사용합니다.
-
-**계산 API 요청 페이로드의 단위**
-
-`api` 정책이 외부 서버로 보내는 요청은 **저장 단위(g / cm³)를 그대로** 싣습니다. 위 kg/L 환산은
-쇼핑몰이 자체 계산할 때만 적용되며, 외부 API 로는 환산 전 값이 나갑니다. 값에 단위를 나타내는
-접미사나 별도 필드는 붙지 않으므로, 받는 쪽에서 g/cm³ 로 해석해야 합니다.
-
-| 필드 | 단위 | 비고 |
-| --- | --- | --- |
-| `items[].weight` | g | 상품 옵션에 저장된 무게 |
-| `items[].volume` | cm³ | 상품 옵션에 저장된 부피 |
-| `items[].quantity` | 개 | |
-| `items[].subtotal` · `group_total` | 기본 통화 금액 | |
-| `total_quantity` | 개 | 배송 그룹 합계 수량 |
-
-`api_config.field_map` 은 키 이름만 바꿉니다 — 값의 단위는 변환하지 않습니다. 외부 API 가 kg 을
-요구한다면 그 변환은 받는 쪽에서 수행해야 합니다.
-
-**도서산간 우편번호(`extra_fee_settings[].zipcode`) 형식**
-
-다음 3가지 형식만 허용합니다. 그 외 형식은 어떤 우편번호에도 매칭되지 않아 추가배송비가
-조용히 누락되므로 422 로 거부합니다.
-
-| 형식 | 예 | 의미 |
-| --- | --- | --- |
-| `\d+` | `63000` | 정확일치 |
-| `\d+-\d+` | `63000-63644` | 범위(양끝 포함) |
-| `\d+*` | `63*` | 접두 일치 |
-
-`extra_fee_multiply` 를 켜면 `per_*` 정책에서 추가배송비가 **기본 배송비와 같은 배송 단위 수**만큼
-곱해집니다(주문 수량이 아닙니다).
 
 ---
 
@@ -117,19 +32,13 @@
 | charge_policies | query | array | 아니오 | — | 배송비 부과정책으로 필터 (free/fixed/conditional_free/range_*/api/per_* 등, 국가별 설정 매치) |
 | countries | query | array | 아니오 | — | 배송 국가 코드로 필터 (ISO 코드 배열, 해당 국가 설정을 가진 정책만) |
 | is_active | query | string | 아니오 | ``, `true`, `false` | 활성 여부 (true 활성 / false 비활성) |
-| with_country_settings | query | boolean | 아니오 | 기본 `false` | 국가별 설정을 **전체 컬럼**으로 포함할지. 기본값에서도 `country_settings` 는 내려가지만 목록 표시용 필드만 담깁니다(구간 설정·도서산간 설정·계산 API 설정 제외). 편집 폼처럼 전체 값이 필요한 호출자만 켜세요 |
+| with_country_settings | query | boolean | 아니오 | — | 국가별 설정을 **전체 컬럼**으로 포함할지. 기본값에서도 `country_settings` 는 내려가지만 목록 표시용 필드만 담깁니다(구간 설정·도서산간 설정·계산 API 설정 제외). 편집 폼처럼 전체 값이 필요한 호출자만 켜세요 |
 | sort_by | query | string | 아니오 | `id`, `name`, `is_active`, `sort_order`, `created_at`, `updated_at` | 정렬 기준 필드명 |
 | sort_order | query | string | 아니오 | `asc`, `desc` | 정렬 방향 (asc 오름차순 / desc 내림차순) |
 | per_page | query | integer | 아니오 | min 10, max 100 | 페이지당 항목 수 |
 | page | query | integer | 아니오 | min 1 | 조회할 페이지 번호 (1부터 시작) |
 
 > 이 엔드포인트는 확장이 파라미터를 추가할 수 있습니다 (`sirsoft-ecommerce.shipping_policy.list_validation_rules`, `sirsoft-ecommerce.shipping_policy.list_validation_messages`).
-
-**목록은 경량 표현입니다.**
-
-국가별 설정(`country_settings[]`)은 목록 화면이 그리는 필드만 담습니다 — 국가 코드, 배송방법, 부과정책, 배송비, 무료배송 기준액, 도서산간 사용 여부, 활성 여부. 구간 설정(`ranges`), 도서산간 상세(`extra_fee_settings`), 계산 API 설정(`api_*`)은 정책 하나에 국가 수만큼 곱해지는 중첩 데이터라 목록에서 제외합니다. 전체 값이 필요하면 `with_country_settings=1` 을 쓰거나 단건 조회(`GET .../admin/shipping-policies/{id}`)를 이용하세요.
-
-비활성 국가 설정도 함께 내려갑니다(`is_active: false`) — 목록이 비활성 배지를 그리기 때문입니다. 다만 배송비 요약(`fee_summary`)과 국가 표시(`countries_display`)는 활성 설정만 세므로, 조회 경로와 무관하게 같은 값이 나옵니다.
 
 **요청 예시**
 
@@ -392,6 +301,8 @@ Authorization: Bearer {YOUR_TOKEN}
 ```
 
 **응답 필드** (`data` 내부)
+
+
 
 | 필드 | 타입 | 실측 예시값 | 용도/설명 |
 | --- | --- | --- | --- |
