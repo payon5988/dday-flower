@@ -29,7 +29,9 @@
     "shop": "쇼핑",
     "products": "상품",
     "cart": "장바구니",
-    "mypage": "마이페이지"
+    "mypage": "마이페이지",
+    "orders": "주문내역",
+    "wishlist": "찜 목록"
   },
   "footer": {
     "info": "정보",

@@ -1,0 +1,1381 @@
+{
+    "version": "1.0.0",
+    "layout_name": "shop/flower_premium",
+    "permissions": [],
+    "extends": "_user_base",
+    "meta": {
+        "seo": {
+            "enabled": true,
+            "data_sources": ["products", "flowerSlots", "dayStatus", "flowerOptions", "cardTemplates"],
+            "priority": 0.8,
+            "changefreq": "daily",
+            "og": {
+                "type": "website",
+                "title": "$t:shop.flower.page_title"
+            }
+        }
+    },
+    "data_sources": [
+        {
+            "id": "products",
+            "label_key": "$t:editor.data_source.products",
+            "type": "api",
+            "endpoint": "/api/modules/sirsoft-ecommerce/products",
+            "method": "GET",
+            "auth_mode": "optional",
+            "params": {
+                "page": 1,
+                "per_page": 8,
+                "sort": "latest"
+            },
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "data": []
+            }
+        },
+        {
+            "id": "flowerSlots",
+            "label_key": "$t:editor.data_source.flowerSlots",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/products/1/delivery-slots",
+            "method": "GET",
+            "auth_mode": "optional",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "date": "",
+                "slots": []
+            }
+        },
+        {
+            "id": "dayStatus",
+            "label_key": "$t:editor.data_source.dayStatus",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/delivery-day-status",
+            "method": "GET",
+            "auth_mode": "optional",
+            "params": {
+                "product_id": 1
+            },
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "date": "",
+                "cutoff": "14:00",
+                "is_today": true,
+                "same_day_available": false,
+                "same_day_remaining": 0
+            }
+        },
+        {
+            "id": "flowerOptions",
+            "label_key": "$t:editor.data_source.flowerOptions",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/products/1/options",
+            "method": "GET",
+            "auth_mode": "optional",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "groups": {},
+                "options": []
+            }
+        },
+        {
+            "id": "cardTemplates",
+            "label_key": "$t:editor.data_source.cardTemplates",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/message-card/templates",
+            "method": "GET",
+            "auth_mode": "optional",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "templates": []
+            }
+        },
+        {
+            "id": "mySubscriptions",
+            "label_key": "$t:editor.data_source.mySubscriptions",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/subscriptions/mine",
+            "method": "GET",
+            "auth_mode": "required",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "subscriptions": []
+            }
+        },
+        {
+            "id": "myCards",
+            "label_key": "$t:editor.data_source.myCards",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/message-cards/mine",
+            "method": "GET",
+            "auth_mode": "required",
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "cards": []
+            }
+        }
+    ],
+    "slots": {
+        "content": [
+            {
+                "comment": "공지 바 — 당일배송 마감 안내 (dayStatus 자동 계산)",
+                "type": "basic",
+                "name": "Div",
+                "props": {
+                    "className": "bg-forest dark:bg-charcoal text-center px-4 py-2"
+                },
+                "children": [
+                    {
+                        "comment": "당일배송 가능 시 — 마감 시각·잔여 표시",
+                        "type": "basic",
+                        "name": "P",
+                        "if": "{{dayStatus?.data?.same_day_available === true}}",
+                        "props": {
+                            "className": "text-xs font-medium text-gold"
+                        },
+                        "text": "{{'$t:shop.flower.notice_open_prefix' + (dayStatus?.data?.cutoff ?? '14:00') + '$t:shop.flower.notice_open_middle' + (dayStatus?.data?.same_day_remaining ?? 0) + '$t:shop.flower.notice_open_suffix'}}"
+                    },
+                    {
+                        "comment": "당일배송 마감 시 — 내일 안내",
+                        "type": "basic",
+                        "name": "P",
+                        "if": "{{dayStatus?.data?.same_day_available !== true}}",
+                        "props": {
+                            "className": "text-xs font-medium text-gold"
+                        },
+                        "text": "$t:shop.flower.notice_closed"
+                    }
+                ]
+            },
+            {
+                "comment": "히어로 — 무드 그라데이션 + 꽃잎 드리프트 + Playfair 액센트 + 텍스트 그림자",
+                "type": "basic",
+                "name": "Div",
+                "props": {
+                    "className": "relative overflow-hidden bg-cream dark:bg-charcoal"
+                },
+                "children": [
+                    {
+                        "comment": "무드 조명 블롭 2개",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "pointer-events-none absolute -top-20 -left-20 w-72 h-72 rounded-full bg-blush opacity-60 blur-3xl"
+                        }
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "pointer-events-none absolute -bottom-24 -right-16 w-80 h-80 rounded-full bg-gold opacity-20 blur-3xl"
+                        }
+                    },
+                    {
+                        "comment": "흩날리는 꽃잎 3장 (모션 최소화 설정 시 정지)",
+                        "type": "basic",
+                        "name": "Span",
+                        "props": {
+                            "className": "flower-petal pointer-events-none absolute top-0 left-1/4 text-2xl"
+                        },
+                        "text": "❀"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Span",
+                        "props": {
+                            "className": "flower-petal pointer-events-none absolute top-0 left-2/4 text-xl"
+                        },
+                        "text": "✿"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Span",
+                        "props": {
+                            "className": "flower-petal pointer-events-none absolute top-0 left-3/4 text-2xl"
+                        },
+                        "text": "❁"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Container",
+                        "props": {
+                            "className": "relative py-16 px-4 text-center"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "font-display text-sm tracking-[0.3em] text-gold-dark dark:text-antique-gold mb-4"
+                                },
+                                "text": "PREMIUM FLOWER DELIVERY"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "H1",
+                                "props": {
+                                    "className": "flower-fade-up text-3xl font-bold text-forest dark:text-white leading-snug [text-shadow:0_2px_12px_rgba(0,0,0,0.25)]"
+                                },
+                                "text": "$t:shop.flower.hero_title"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "mt-3 text-gray-600 dark:text-gray-400"
+                                },
+                                "text": "$t:shop.flower.hero_sub"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "mt-6 flex justify-center gap-3"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "className": "flower-btn flower-focusable px-6 py-3 rounded-full text-white font-medium bg-forest hover:opacity-90"
+                                        },
+                                        "text": "$t:shop.flower.cta_browse",
+                                        "actions": [
+                                            { "comment": "audit:allow layout-list-context-navigate-merge-query 프리미엄관에서 상점 목록으로 — 다른 목록으로의 이동이므로 승계하지 않고 리셋한다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": {} } }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "className": "flower-btn flower-focusable px-6 py-3 rounded-full font-medium border border-forest text-forest dark:text-white dark:border-gray-600"
+                                        },
+                                        "text": "$t:shop.flower.cta_subscription",
+                                        "actions": [
+                                            { "comment": "audit:allow layout-list-context-navigate-merge-query 구독 안내 목적의 목록 진입 — 다른 목록이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": {} } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "스마트 배송 캘린더 — 마감 임박은 웜 오렌지 경고",
+                "type": "basic",
+                "name": "Container",
+                "props": {
+                    "className": "py-8 px-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "rounded-2xl overflow-hidden"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "px-5 py-4 bg-forest text-white"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "font-semibold"
+                                        },
+                                        "text": "$t:shop.flower.slots_title"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "text-xs opacity-80 mt-0.5"
+                                        },
+                                        "text": "{{(flowerSlots?.data?.date ?? '') + '$t:shop.flower.slots_date_suffix'}}"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "p-5 bg-cream dark:bg-gray-800 grid grid-cols-1 sm:grid-cols-3 gap-3"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "iteration": { "source": "{{flowerSlots?.data?.slots ?? []}}", "item_var": "slot" },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "p-4 rounded-xl border bg-white dark:bg-gray-700 {{slot?.available ? 'border-blush' : 'opacity-60 border-gray-200 dark:border-gray-600'}}"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "font-semibold text-forest dark:text-white"
+                                                        },
+                                                        "text": "{{slot?.time ?? ''}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs mt-1 {{(slot?.available && (slot?.remaining ?? 0) <= 2) ? 'text-warm-orange font-semibold' : 'text-gray-500 dark:text-gray-400'}}"
+                                                        },
+                                                        "text": "{{slot?.available ? ('$t:shop.flower.slots_remaining_prefix' + (slot?.remaining ?? 0) + ((slot?.remaining ?? 0) <= 2 ? '$t:shop.flower.slots_urgent' : '')) : '$t:shop.flower.slots_closed'}}"
+                                                    },
+                                                    {
+                                                        "comment": "예약 버튼 — 마감 슬롯은 미렌더",
+                                                        "type": "basic",
+                                                        "name": "Button",
+                                                        "if": "{{slot?.available === true}}",
+                                                        "props": {
+                                                            "className": "flower-btn flower-focusable mt-3 w-full py-2 rounded-full text-sm text-white bg-forest hover:opacity-90"
+                                                        },
+                                                        "text": "$t:shop.flower.reserve_btn",
+                                                        "actions": [
+                                                            {
+                                                                "type": "click",
+                                                                "handler": "apiCall",
+                                                                "target": "/api/plugins/sirsoft-flower_delivery/delivery-slots/reserve",
+                                                                "params": {
+                                                                    "method": "POST",
+                                                                    "body": {
+                                                                        "product_id": 1,
+                                                                        "delivery_date": "{{flowerSlots?.data?.date ?? ''}}",
+                                                                        "time_slot": "{{slot?.time ?? ''}}",
+                                                                        "message_card": {
+                                                                            "sender": "{{_local.card?.sender ?? ''}}",
+                                                                            "recipient": "{{_local.card?.recipient ?? ''}}",
+                                                                            "content": "{{_local.card?.content ?? ''}}"
+                                                                        },
+                                                                        "selected_options": "{{(flowerOptions?.data?.options ?? []).filter(o => (_local.selectedOptions ?? {})[o?.group] === o?.key).map(o => ({group: o?.group, key: o?.key, label: o?.label, price_delta: o?.price_delta}))}}"
+                                                                    }
+                                                                },
+                                                                "onSuccess": [
+                                                                    { "handler": "toast", "params": { "type": "success", "message": "$t:shop.flower.reserve_ok" } },
+                                                                    { "handler": "refetchDataSource", "params": { "dataSourceId": "flowerSlots" } },
+                                                                    {
+                                                                        "comment": "예약 내용을 전역 초안에 보관 — 체크아웃 꽃 조각이 주문서에 실어 보낸다",
+                                                                        "handler": "setState",
+                                                                        "params": {
+                                                                            "target": "global",
+                                                                            "flowerDraft.date": "{{flowerSlots?.data?.date ?? ''}}",
+                                                                            "flowerDraft.slot": "{{slot?.time ?? ''}}",
+                                                                            "flowerDraft.reservation": "{{response.data?.reservation_id ?? ''}}",
+                                                                            "flowerDraft.sender": "{{_local.card?.sender ?? ''}}",
+                                                                            "flowerDraft.recipient": "{{_local.card?.recipient ?? ''}}",
+                                                                            "flowerDraft.content": "{{_local.card?.content ?? ''}}"
+                                                                        }
+                                                                    }
+                                                                ],
+                                                                "onError": [
+                                                                    { "handler": "toast", "params": { "type": "error", "message": "$t:shop.flower.reserve_fail" } }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "4:5 커스텀 상품 카드 — 호버 5% 줌 + 하단 그라데이션 + 당일배송 페이드인",
+                "type": "basic",
+                "name": "Container",
+                "props": {
+                    "className": "py-8 px-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "H2",
+                        "props": {
+                            "className": "text-xl font-bold text-gray-900 dark:text-white mb-1"
+                        },
+                        "text": "$t:shop.flower.pick_title"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "font-display text-sm text-gold-dark dark:text-antique-gold mb-5"
+                        },
+                        "text": "Today's Pick — 4:5 feed"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "iteration": {
+                                    "source": "{{products?.data?.data ?? []}}",
+                                    "item_var": "product"
+                                },
+                                "children": [
+                                    {
+                                        "comment": "카드 전체가 상세로 이동 (product_code, 없으면 id) — 공유 버튼은 바깥 형제로 분리 (버블링 방지)",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "group relative overflow-hidden rounded-2xl bg-cream dark:bg-gray-800 cursor-pointer"
+                                        },
+                                        "actions": [
+                                            { "comment": "audit:allow layout-list-context-navigate-merge-query 카드 → 상세 — 목록 상태 승계로 복귀 동선을 유지한다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products/{{product?.product_code ?? product?.id}}", "mergeQuery": true, "query": {} } }
+                                        ],
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "aspect-[4/5] overflow-hidden"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Img",
+                                                        "props": {
+                                                            "src": "{{product?.thumbnail_url ?? '/images/placeholder.png'}}",
+                                                            "alt": "{{$localized(product?.name) ?? '$t:shop.flower.product_alt'}}",
+                                                            "className": "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                        }
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "comment": "하단 그라데이션 오버레이 + 당일배송 문구 (호버 페이드인)",
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs text-white"
+                                                        },
+                                                        "text": "$t:shop.flower.overlay_sameday"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "p-3"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-sm font-medium text-gray-900 dark:text-white truncate"
+                                                        },
+                                                        "text": "{{$localized(product?.name) ?? '$t:shop.flower.product_alt'}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "font-display text-sm font-bold text-forest dark:text-white mt-0.5"
+                                                        },
+                                                        "text": "{{product?.selling_price_formatted ?? ''}}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "comment": "공유 버튼 — 카드 바깥 형제 (버블 방지)",
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "type": "button",
+                                            "className": "flower-btn flower-focusable mt-1 text-xs text-forest dark:text-gold underline underline-offset-2"
+                                        },
+                                        "text": "$t:shop.flower.share_btn",
+                                        "actions": [
+                                            {
+                                                "comment": "공유 페이로드 조회 후 모달에 담아 표시 (클립보드 복사기는 미제공 — 직접 복사)",
+                                                "type": "click",
+                                                "handler": "apiCall",
+                                                "target": "/api/plugins/sirsoft-flower_delivery/products/{{product?.id}}/share",
+                                                "params": {
+                                                    "method": "GET"
+                                                },
+                                                "onSuccess": [
+                                                    { "handler": "setState", "params": { "target": "local", "share.name": "{{response.data?.name ?? ''}}", "share.message": "{{response.data?.message ?? ''}}", "share.url": "{{response.data?.url ?? ''}}" } },
+                                                    { "handler": "openModal", "target": "flowerShareModal" }
+                                                ],
+                                                "onError": [
+                                                    { "handler": "toast", "params": { "type": "error", "message": "$t:shop.flower.share_fail" } }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "if": "{{(products?.data?.data ?? []).length === 0}}",
+                        "props": {
+                            "className": "py-16 text-center"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-4xl mb-3"
+                                },
+                                "text": "🌱"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-gray-600 dark:text-gray-400"
+                                },
+                                "text": "$t:shop.flower.empty_products"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "맞춤 옵션 안내 — 리본·포장·보존제 (API 실측 표시, 정보성)",
+                "type": "basic",
+                "name": "Container",
+                "props": {
+                    "className": "py-4 px-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "H2",
+                        "props": {
+                            "className": "text-xl font-bold text-gray-900 dark:text-white mb-1"
+                        },
+                        "text": "$t:shop.flower.options_title"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "text-sm text-gray-500 dark:text-gray-400 mb-4"
+                        },
+                        "text": "$t:shop.flower.options_desc"
+                    },
+                    {
+                        "comment": "옵션 단일 선택 — 그룹별 1개, 예약 시 함께 전송",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "flex flex-wrap gap-2"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "iteration": { "source": "{{flowerOptions?.data?.options ?? []}}", "item_var": "opt" },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "className": "{{(_local.selectedOptions ?? {})[opt?.group] === opt?.key ? 'flower-btn flower-focusable inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border border-forest bg-forest text-white font-semibold' : 'flower-btn flower-focusable inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border border-blush bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300'}}"
+                                        },
+                                        "actions": [
+                                            { "comment": "그룹별 단일 선택 — 키는 정적, 값에서 계산 (setState 키 동적 생성 금지)", "type": "click", "handler": "setState", "params": { "target": "local", "selectedOptions": "{{Object.assign({}, (_local.selectedOptions ?? {}), ({[opt?.group]: opt?.key}))}}" } }
+                                        ],
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "text": "{{opt?.label ?? ''}}"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "if": "{{(opt?.price_delta ?? 0) > 0}}",
+                                                "props": {
+                                                    "className": "opacity-80"
+                                                },
+                                                "text": "{{'+' + opt?.price_delta}}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "감성 메시지 카드 작성기 — 템플릿 칩 + 실시간 미리보기 + 글자수 + 암호화 카피",
+                "type": "basic",
+                "name": "Container",
+                "props": {
+                    "className": "py-8 px-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "rounded-2xl p-6 bg-blush-light dark:bg-gray-800 border border-blush"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "H2",
+                                "props": {
+                                    "className": "text-xl font-bold text-forest dark:text-white"
+                                },
+                                "text": "$t:shop.flower.card_title"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "text-xs text-gray-600 dark:text-gray-400 mt-1"
+                                },
+                                "text": "$t:shop.flower.card_trust"
+                            },
+                            {
+                                "comment": "템플릿 칩 4종 (서버 실측)",
+                                "type": "basic",
+                                "name": "Div",
+                                "props": {
+                                    "className": "flex flex-wrap gap-2 mt-4"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "iteration": { "source": "{{cardTemplates?.data?.templates ?? []}}", "item_var": "tpl" },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "props": {
+                                                    "className": "flower-btn flower-focusable px-3 py-1.5 rounded-full text-xs border border-forest text-forest dark:text-white dark:border-gray-600"
+                                                },
+                                                "text": "{{tpl?.label ?? ''}}",
+                                                "actions": [
+                                                    { "type": "click", "handler": "setState", "params": { "target": "local", "card.content": "{{tpl?.content ?? ''}}" } }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Form",
+                                "props": { "className": "mt-4 space-y-3" },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": { "className": "grid grid-cols-2 gap-3" },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "Input",
+                                                "props": {
+                                                    "type": "text",
+                                                    "name": "sender",
+                                                    "value": "{{_local.card?.sender ?? ''}}",
+                                                    "placeholder": "$t:shop.flower.sender_ph",
+                                                    "className": "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                },
+                                                "actions": [
+                                                    { "type": "change", "handler": "setState", "params": { "target": "local", "card.sender": "{{$event.target.value}}" } }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Input",
+                                                "props": {
+                                                    "type": "text",
+                                                    "name": "recipient",
+                                                    "value": "{{_local.card?.recipient ?? ''}}",
+                                                    "placeholder": "$t:shop.flower.recipient_ph",
+                                                    "className": "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                                },
+                                                "actions": [
+                                                    { "type": "change", "handler": "setState", "params": { "target": "local", "card.recipient": "{{$event.target.value}}" } }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Textarea",
+                                        "props": {
+                                            "name": "content",
+                                            "value": "{{_local.card?.content ?? ''}}",
+                                            "placeholder": "$t:shop.flower.content_ph",
+                                            "className": "w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                        },
+                                        "actions": [
+                                            { "type": "change", "handler": "setState", "params": { "target": "local", "card.content": "{{$event.target.value}}" } }
+                                        ]
+                                    },
+                                    {
+                                        "comment": "실시간 글자수 + 200자 초과 경고 (서버는 200자·허용문자 검증)",
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "text-right text-xs {{(_local.card?.content ?? '').length > 200 ? 'text-warm-orange font-semibold' : 'text-gray-500 dark:text-gray-400'}}"
+                                        },
+                                        "text": "{{(_local.card?.content ?? '').length + ' / 200' + '$t:shop.flower.counter_unit' + ((_local.card?.content ?? '').length > 200 ? '$t:shop.flower.counter_over' : '')}}"
+                                    },
+                                    {
+                                        "comment": "실시간 엽서 미리보기 (웜 크림 + 세리프 + 타이핑 커서)",
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "rounded-xl p-5 bg-cream dark:bg-gray-700 border border-gold shadow-sm"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "props": {
+                                                    "className": "font-display text-lg text-forest dark:text-white leading-relaxed"
+                                                },
+                                                "text": "{{_local.card?.content ?? '$t:shop.flower.preview_default'}}"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Span",
+                                                "props": {
+                                                    "className": "flower-caret inline-block w-0.5 h-5 bg-forest dark:bg-white align-middle"
+                                                },
+                                                "text": ""
+                                            },
+                                            {
+                                                "comment": "From/To 행 — 노드당 표현식 하나로 분리",
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "props": {
+                                                    "className": "text-xs text-gray-500 dark:text-gray-400 mt-3"
+                                                },
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "$t:shop.flower.from_prefix"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "{{_local.card?.sender ?? '$t:shop.flower.sender_ph'}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "$t:shop.flower.to_prefix"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "text": "{{_local.card?.recipient ?? '$t:shop.flower.recipient_ph'}}"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "type": "button",
+                                            "className": "flower-btn flower-focusable px-6 py-2.5 rounded-full text-white font-medium bg-forest hover:opacity-90"
+                                        },
+                                        "text": "$t:shop.flower.save_draft",
+                                        "actions": [
+                                            { "type": "click", "handler": "toast", "params": { "type": "success", "message": "$t:shop.flower.draft_saved" } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "경조사 리본 문구 안내",
+                "partial": "partials/shop/flower/_ribbon.json"
+            },
+            {
+                "comment": "정기구독 — 내 구독 + 일시정지/재개 (비로그인은 로그인 CTA)",
+                "type": "basic",
+                "name": "Container",
+                "props": {
+                    "className": "py-8 px-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "rounded-2xl p-6 bg-forest text-white"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "props": {
+                                    "className": "font-display text-xs tracking-[0.3em] text-gold mb-2"
+                                },
+                                "text": "SUBSCRIPTION"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "H2",
+                                "props": {
+                                    "className": "text-xl font-bold"
+                                },
+                                "text": "$t:shop.flower.sub_title"
+                            },
+                            {
+                                "comment": "비로그인 안내 — 내 구독은 로그인 후 확인",
+                                "type": "basic",
+                                "name": "Div",
+                                "if": "{{!_global.currentUser?.uuid}}",
+                                "props": {
+                                    "className": "mt-4 p-4 rounded-xl bg-white/10 text-center"
+                                },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "P",
+                                        "props": {
+                                            "className": "text-sm opacity-80"
+                                        },
+                                        "text": "$t:shop.flower.sub_login_hint"
+                                    },
+                                    {
+                                        "type": "basic",
+                                        "name": "Button",
+                                        "props": {
+                                            "className": "flower-btn flower-focusable mt-3 px-5 py-2 rounded-full text-sm bg-white text-forest font-medium"
+                                        },
+                                        "text": "$t:shop.flower.sub_login_cta",
+                                        "actions": [
+                                            { "comment": "audit:allow layout-list-context-navigate-merge-query 로그인 진입 — 독립 화면이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "/login", "query": {} } }
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "iteration": { "source": "{{mySubscriptions?.data?.subscriptions ?? []}}", "item_var": "sub" },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "mt-4 p-4 rounded-xl bg-white/10 flex items-center justify-between gap-3"
+                                        },
+                                        "children": [
+                                            {
+                                                "comment": "구독 요약 3연속 — 노드당 표현식 하나로 분리",
+                                                "type": "basic",
+                                                "name": "Div",
+                                                "children": [
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "text-sm font-medium text-white"
+                                                        },
+                                                        "text": "{{sub?.cycle === 'weekly' ? '$t:shop.flower.sub_weekly' : '$t:shop.flower.sub_monthly'}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "text-sm text-white/80"
+                                                        },
+                                                        "text": "$t:shop.flower.sub_next_prefix"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "Span",
+                                                        "props": {
+                                                            "className": "text-sm font-medium text-white"
+                                                        },
+                                                        "text": "{{sub?.next_delivery_date ?? ''}}"
+                                                    },
+                                                    {
+                                                        "type": "basic",
+                                                        "name": "P",
+                                                        "props": {
+                                                            "className": "text-xs opacity-70 mt-0.5 text-white"
+                                                        },
+                                                        "text": "{{sub?.status === 'paused' ? '$t:shop.flower.sub_paused_state' : '$t:shop.flower.sub_active'}}"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "comment": "진행 중이면 일시정지, 정지 중이면 재개 (상태별 분기 고정)",
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "if": "{{sub?.status !== 'paused'}}",
+                                                "props": {
+                                                    "className": "flower-btn flower-focusable px-4 py-2 rounded-full text-xs bg-white text-forest font-medium"
+                                                },
+                                                "text": "$t:shop.flower.pause_btn",
+                                                "actions": [
+                                                    {
+                                                        "type": "click",
+                                                        "handler": "apiCall",
+                                                        "target": "/api/plugins/sirsoft-flower_delivery/subscriptions/{{sub?.id}}/pause",
+                                                        "params": { "method": "PATCH" },
+                                                        "onSuccess": [
+                                                            { "handler": "toast", "params": { "type": "success", "message": "$t:shop.flower.pause_ok" } },
+                                                            { "handler": "refetchDataSource", "params": { "dataSourceId": "mySubscriptions" } }
+                                                        ],
+                                                        "onError": [
+                                                            { "handler": "toast", "params": { "type": "error", "message": "$t:shop.flower.sub_fail" } }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "Button",
+                                                "if": "{{sub?.status === 'paused'}}",
+                                                "props": {
+                                                    "className": "flower-btn flower-focusable px-4 py-2 rounded-full text-xs bg-gold text-forest font-medium"
+                                                },
+                                                "text": "$t:shop.flower.resume_btn",
+                                                "actions": [
+                                                    {
+                                                        "type": "click",
+                                                        "handler": "apiCall",
+                                                        "target": "/api/plugins/sirsoft-flower_delivery/subscriptions/{{sub?.id}}/resume",
+                                                        "params": { "method": "PATCH" },
+                                                        "onSuccess": [
+                                                            { "handler": "toast", "params": { "type": "success", "message": "$t:shop.flower.resume_ok" } },
+                                                            { "handler": "refetchDataSource", "params": { "dataSourceId": "mySubscriptions" } }
+                                                        ],
+                                                        "onError": [
+                                                            { "handler": "toast", "params": { "type": "error", "message": "$t:shop.flower.sub_fail" } }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "신규 구독 신청 — 로그인 시에만 (주기는 주간/월간 선택)",
+                "type": "basic",
+                "name": "Div",
+                "if": "{{_global.currentUser?.uuid}}",
+                "props": {
+                    "className": "mt-4 p-4 rounded-xl bg-white/10"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "text-sm font-medium"
+                        },
+                        "text": "$t:shop.flower.sub_apply_title"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "flex gap-2 mt-3"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Button",
+                                "props": {
+                                    "className": "flower-btn flower-focusable flex-1 py-2 rounded-full text-xs {{(_local.subCycle ?? 'weekly') === 'weekly' ? 'bg-white text-forest font-semibold' : 'bg-white/20 text-white'}}"
+                                },
+                                "text": "$t:shop.flower.sub_weekly",
+                                "actions": [
+                                    { "type": "click", "handler": "setState", "params": { "target": "local", "subCycle": "weekly" } }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Button",
+                                "props": {
+                                    "className": "flower-btn flower-focusable flex-1 py-2 rounded-full text-xs {{(_local.subCycle ?? 'weekly') === 'monthly' ? 'bg-white text-forest font-semibold' : 'bg-white/20 text-white'}}"
+                                },
+                                "text": "$t:shop.flower.sub_monthly",
+                                "actions": [
+                                    { "type": "click", "handler": "setState", "params": { "target": "local", "subCycle": "monthly" } }
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Button",
+                                "props": {
+                                    "className": "flower-btn flower-focusable flex-1 py-2 rounded-full text-xs bg-gold text-forest font-semibold"
+                                },
+                                "text": "$t:shop.flower.sub_apply_btn",
+                                "actions": [
+                                    {
+                                        "type": "click",
+                                        "handler": "apiCall",
+                                        "target": "/api/plugins/sirsoft-flower_delivery/subscriptions",
+                                        "params": {
+                                            "method": "POST",
+                                            "body": {
+                                                "product_id": 1,
+                                                "cycle": "{{_local.subCycle ?? 'weekly'}}"
+                                            }
+                                        },
+                                        "onSuccess": [
+                                            { "handler": "toast", "params": { "type": "success", "message": "{{response.message}}" } },
+                                            { "handler": "refetchDataSource", "params": { "dataSourceId": "mySubscriptions" } }
+                                        ],
+                                        "onError": [
+                                            { "handler": "toast", "params": { "type": "error", "message": "$t:shop.flower.sub_fail" } }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "내가 보낸 메시지 아카이브 — 로그인 시에만 (본인 주문 기준)",
+                "type": "basic",
+                "name": "Container",
+                "if": "{{_global.currentUser?.uuid}}",
+                "props": {
+                    "className": "py-8 px-4"
+                },
+                "children": [
+                    {
+                        "type": "basic",
+                        "name": "H2",
+                        "props": {
+                            "className": "text-xl font-bold text-gray-900 dark:text-white mb-4"
+                        },
+                        "text": "$t:shop.flower.archive_title"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "space-y-3"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Div",
+                                "iteration": { "source": "{{myCards?.data?.cards ?? []}}", "item_var": "mc" },
+                                "children": [
+                                    {
+                                        "type": "basic",
+                                        "name": "Div",
+                                        "props": {
+                                            "className": "p-4 rounded-xl bg-cream dark:bg-gray-800 border border-blush"
+                                        },
+                                        "children": [
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "props": {
+                                                    "className": "font-display text-gray-900 dark:text-white"
+                                                },
+                                                "text": "{{mc?.content ?? ''}}"
+                                            },
+                                            {
+                                                "type": "basic",
+                                                "name": "P",
+                                                "props": {
+                                                    "className": "text-xs text-gray-500 dark:text-gray-400 mt-2"
+                                                },
+                                                "text": "{{mc?.sender ?? ''}} → {{mc?.recipient ?? ''}}"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Div",
+                        "if": "{{(myCards?.data?.cards ?? []).length === 0}}",
+                        "props": {
+                            "className": "py-8 text-center text-sm text-gray-500 dark:text-gray-400"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "P",
+                                "text": "$t:shop.flower.archive_empty"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "comment": "개인정보 동의 + 원페이지 체크아웃 CTA (동의는 슬라이드 패널 모달)",
+                "type": "basic",
+                "name": "Container",
+                "props": {
+                    "className": "py-10 px-4 text-center"
+                },
+                "children": [
+                    {
+                        "comment": "개인정보 안내 — 실제 동의는 체크아웃에서 (게이트 없음)",
+                        "type": "basic",
+                        "name": "Div",
+                        "props": {
+                            "className": "flex items-center justify-center gap-2 mb-5"
+                        },
+                        "children": [
+                            {
+                                "type": "basic",
+                                "name": "Span",
+                                "props": {
+                                    "className": "text-sm text-gray-700 dark:text-gray-300"
+                                },
+                                "text": "$t:shop.flower.consent_label"
+                            },
+                            {
+                                "type": "basic",
+                                "name": "Button",
+                                "props": {
+                                    "className": "flower-btn flower-focusable text-sm text-forest dark:text-gold underline underline-offset-2"
+                                },
+                                "text": "$t:shop.flower.consent_detail",
+                                "actions": [
+                                    { "type": "click", "handler": "openModal", "target": "flowerPrivacyModal" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "text-xs text-gray-500 dark:text-gray-400 mb-4"
+                        },
+                        "text": "$t:shop.flower.consent_checkout_note"
+                    },
+                    {
+                        "type": "basic",
+                        "name": "Button",
+                        "props": {
+                            "className": "flower-btn flower-focusable px-8 py-3.5 rounded-full text-white font-semibold bg-forest hover:opacity-90 text-lg"
+                        },
+                        "text": "$t:shop.flower.order_now",
+                        "actions": [
+                            { "comment": "audit:allow layout-list-context-navigate-merge-query 체크아웃은 독립 플로우 — 목록 쿼리를 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/checkout", "query": {} } }
+                        ]
+                    },
+                    {
+                        "type": "basic",
+                        "name": "P",
+                        "props": {
+                            "className": "mt-3 text-xs text-gray-500 dark:text-gray-400"
+                        },
+                        "text": "$t:shop.flower.masking_note"
+                    }
+                ]
+            }
+        ]
+    },
+    "modals": [
+        {
+            "comment": "공유 모달 — 문구·링크 표시 (직접 복사)",
+            "id": "flowerShareModal",
+            "type": "composite",
+            "name": "Modal",
+            "props": {
+                "title": "$t:shop.flower.share_modal_title",
+                "size": "medium"
+            },
+            "children": [
+                {
+                    "type": "basic",
+                    "name": "P",
+                    "props": {
+                        "className": "font-semibold text-gray-900 dark:text-white"
+                    },
+                    "text": "{{_local.share?.name ?? ''}}"
+                },
+                {
+                    "type": "basic",
+                    "name": "P",
+                    "props": {
+                        "className": "text-sm text-gray-700 dark:text-gray-300 mt-2"
+                    },
+                    "text": "{{_local.share?.message ?? ''}}"
+                },
+                {
+                    "type": "basic",
+                    "name": "P",
+                    "props": {
+                        "className": "text-xs text-gray-500 dark:text-gray-400 mt-2 break-all"
+                    },
+                    "text": "{{_local.share?.url ?? ''}}"
+                },
+                {
+                    "type": "basic",
+                    "name": "P",
+                    "props": {
+                        "className": "text-xs text-gray-500 dark:text-gray-400 mt-3"
+                    },
+                    "text": "$t:shop.flower.share_modal_note"
+                },
+                {
+                    "type": "basic",
+                    "name": "Div",
+                    "props": {
+                        "className": "flex justify-end mt-4"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Button",
+                            "props": {
+                                "type": "button",
+                                "className": "px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300"
+                            },
+                            "text": "$t:shop.flower.modal_close",
+                            "actions": [
+                                { "type": "click", "handler": "closeModal" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "comment": "개인정보 동의 슬라이드 패널 — 흐름을 끊지 않는 우측 패널형 모달",
+            "id": "flowerPrivacyModal",
+            "type": "composite",
+            "name": "Modal",
+            "props": {
+                "title": "$t:shop.flower.consent_label",
+                "size": "medium"
+            },
+            "children": [
+                {
+                    "type": "basic",
+                    "name": "Div",
+                    "props": {
+                        "className": "space-y-3 text-sm text-gray-700 dark:text-gray-300"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "P",
+                            "text": "$t:shop.flower.modal_p1"
+                        },
+                        {
+                            "type": "basic",
+                            "name": "P",
+                            "props": {
+                                "className": "rounded-lg bg-cream dark:bg-gray-700 p-3 text-xs"
+                            },
+                            "text": "$t:shop.flower.modal_masking"
+                        },
+                        {
+                            "type": "basic",
+                            "name": "P",
+                            "props": {
+                                "className": "text-xs text-gray-500 dark:text-gray-400"
+                            },
+                            "text": "$t:shop.flower.modal_retention"
+                        }
+                    ]
+                },
+                {
+                    "type": "basic",
+                    "name": "Div",
+                    "props": {
+                        "className": "flex justify-end gap-3 mt-6"
+                    },
+                    "children": [
+                        {
+                            "type": "basic",
+                            "name": "Button",
+                            "props": {
+                                "type": "button",
+                                "className": "px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300"
+                            },
+                            "text": "$t:shop.flower.modal_close",
+                            "actions": [
+                                { "type": "click", "handler": "closeModal" }
+                            ]
+                        },
+                        {
+                            "type": "basic",
+                            "name": "Button",
+                            "props": {
+                                "type": "button",
+                                "className": "flower-btn px-4 py-2 bg-forest text-white rounded-lg font-medium"
+                            },
+                            "text": "$t:shop.flower.modal_agree_close",
+                            "actions": [
+                                { "type": "click", "handler": "closeModal" }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

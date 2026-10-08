@@ -1,0 +1,249 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃말 사전 — 10종 이름·뜻 (정적)"
+  },
+  "comment": "꽃말 사전 — 10종",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "H2",
+      "props": {
+        "className": "text-xl font-bold text-gray-900 dark:text-white mb-1"
+      },
+      "text": "$t:shop.flower.dict_title"
+    },
+    {
+      "type": "basic",
+      "name": "P",
+      "props": {
+        "className": "text-sm text-gray-500 dark:text-gray-400 mb-4"
+      },
+      "text": "$t:shop.flower.dict_desc"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "grid grid-cols-2 sm:grid-cols-5 gap-2"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f1_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f1_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f2_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f2_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f3_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f3_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f4_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f4_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f5_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f5_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f6_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f6_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f7_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f7_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f8_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f8_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f9_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f9_meaning"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-3 rounded-xl bg-cream dark:bg-gray-800 border border-blush text-center"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white text-sm" },
+              "text": "$t:shop.flower.dict_f10_name"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-500 dark:text-gray-400 mt-0.5" },
+              "text": "$t:shop.flower.dict_f10_meaning"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

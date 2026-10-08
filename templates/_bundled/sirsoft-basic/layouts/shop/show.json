@@ -13,7 +13,7 @@
             "extensions": [
                 { "type": "module", "id": "sirsoft-ecommerce" }
             ],
-            "data_sources": ["product", "popularProducts", "reviews", "qna"],
+            "data_sources": ["product", "popularProducts", "reviews", "qna", "flowerDetailSlots"],
             "page_type": "product",
             "toggle_setting": "$module_settings:sirsoft-ecommerce:seo.seo_product_detail",
             "vars": {
@@ -240,6 +240,20 @@
             "fallback": {
                 "data": []
             }
+        },
+        {
+            "id": "flowerDetailSlots",
+            "label_key": "$t:editor.data_source.flowerSlots",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/products/by-code/{{route.product_code}}/delivery-slots",
+            "method": "GET",
+            "auto_fetch": true,
+            "auth_mode": "optional",
+            "loading_strategy": "progressive",
+            "fallback": {
+                "date": "",
+                "slots": []
+            }
         }
     ],
     "modals": [
@@ -413,6 +427,10 @@
                                     {
                                         "comment": "구매 카드",
                                         "partial": "partials/shop/detail/_purchase_card.json"
+                                    },
+                                    {
+                                        "comment": "꽃배달 슬롯 (코드 기준 조회)",
+                                        "partial": "partials/shop/detail/_flower_slots.json"
                                     },
                                     {
                                         "comment": "판매상태 안내 (품절/판매중지/출시예정)",

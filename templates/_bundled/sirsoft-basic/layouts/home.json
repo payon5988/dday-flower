@@ -6,11 +6,16 @@
     "meta": {
         "seo": {
             "enabled": true,
-            "data_sources": ["stats", "recent_posts", "popular_boards", "home_boards"],
+            "data_sources": [
+                "products",
+                "dayStatus",
+                "flowerFaqs"
+            ],
             "priority": 1.0,
             "changefreq": "daily",
             "og": {
-                "type": "website"
+                "type": "website",
+                "title": "$t:shop.flower.home_title"
             },
             "structured_data": {
                 "@type": "WebSite",
@@ -21,28 +26,17 @@
     },
     "data_sources": [
         {
-            "id": "stats",
-            "label_key": "$t:editor.data_source.stats",
+            "id": "products",
+            "label_key": "$t:editor.data_source.products",
             "type": "api",
-            "endpoint": "/api/modules/sirsoft-board/boards/stats",
+            "endpoint": "/api/modules/sirsoft-ecommerce/products",
             "method": "GET",
-            "auto_fetch": true,
-            "loading_strategy": "progressive",
-            "fallback": {
-                "data": {
-                    "users": 0,
-                    "posts": 0,
-                    "comments": 0,
-                    "boards": 0
-                }
-            }
-        },
-        {
-            "id": "recent_posts",
-            "label_key": "$t:editor.data_source.recent_posts",
-            "type": "api",
-            "endpoint": "/api/modules/sirsoft-board/boards/posts/recent?limit=5",
-            "method": "GET",
+            "auth_mode": "optional",
+            "params": {
+                "page": 1,
+                "per_page": 4,
+                "sort": "latest"
+            },
             "auto_fetch": true,
             "loading_strategy": "progressive",
             "fallback": {
@@ -50,186 +44,84 @@
             }
         },
         {
-            "id": "popular_boards",
-            "label_key": "$t:editor.data_source.popular_boards",
+            "id": "dayStatus",
+            "label_key": "$t:editor.data_source.dayStatus",
             "type": "api",
-            "endpoint": "/api/modules/sirsoft-board/boards/popular-boards?limit=4",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/delivery-day-status",
             "method": "GET",
+            "auth_mode": "optional",
+            "params": {
+                "product_id": 1
+            },
             "auto_fetch": true,
             "loading_strategy": "progressive",
             "fallback": {
-                "data": []
+                "date": "",
+                "cutoff": "14:00",
+                "is_today": true,
+                "same_day_available": false,
+                "same_day_remaining": 0
             }
         },
         {
-            "id": "home_boards",
-            "label_key": "$t:editor.data_source.home_boards",
+            "id": "flowerFaqs",
+            "label_key": "$t:editor.data_source.flowerFaqs",
             "type": "api",
-            "endpoint": "/api/modules/sirsoft-board/boards?limit=3",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/faqs",
             "method": "GET",
+            "auth_mode": "optional",
             "auto_fetch": true,
             "loading_strategy": "progressive",
             "fallback": {
-                "data": []
+                "faqs": []
             }
         }
     ],
     "slots": {
         "content": [
             {
-                "type": "layout",
-                "name": "Container",
-                "props": {
-                    "className": "py-6 px-4"
-                },
-                "responsive": {
-                    "tablet": {
-                        "props": {
-                            "className": "py-6 px-6"
-                        }
-                    },
-                    "desktop": {
-                        "props": {
-                            "className": "py-6 px-8"
-                        }
-                    }
-                },
-                "children": [
-                    {
-                        "comment": "=== 1행: Welcome + 통계 카드 4개 (PC: 3컬럼, 모바일: 1컬럼) ===",
-                        "type": "basic",
-                        "name": "Div",
-                        "props": {
-                            "className": "grid grid-cols-3 grid-rows-2 gap-4 mb-4"
-                        },
-                        "responsive": {
-                            "portable": {
-                                "props": {
-                                    "className": "grid grid-cols-1 gap-4 mb-4"
-                                }
-                            }
-                        },
-                        "children": [
-                            {
-                                "comment": "=== 좌측: 웰컴 카드 (row-span-2) ===",
-                                "type": "basic",
-                                "name": "Div",
-                                "props": {
-                                    "className": "row-span-2"
-                                },
-                                "children": [
-                                    {
-                                        "partial": "partials/home/_welcome_card.json"
-                                    }
-                                ]
-                            },
-                            {
-                                "comment": "=== 통계 카드 4개 (PC: 개별 배치, 모바일: 2x2 그리드) ===",
-                                "type": "basic",
-                                "name": "Div",
-                                "props": {
-                                    "className": "contents"
-                                },
-                                "responsive": {
-                                    "portable": {
-                                        "props": {
-                                            "className": "col-span-1 grid grid-cols-2 gap-4"
-                                        }
-                                    }
-                                },
-                                "children": [
-                                    {
-                                        "comment": "=== 회원 통계 ===",
-                                        "partial": "partials/home/_stat_card_users.json"
-                                    },
-                                    {
-                                        "comment": "=== 게시글 통계 ===",
-                                        "partial": "partials/home/_stat_card_posts.json"
-                                    },
-                                    {
-                                        "comment": "=== 댓글 통계 ===",
-                                        "partial": "partials/home/_stat_card_comments.json"
-                                    },
-                                    {
-                                        "comment": "=== 게시판 통계 ===",
-                                        "partial": "partials/home/_stat_card_boards.json"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "comment": "=== 2행: 최근 게시글 + 인기 게시판 + 쇼핑몰/가이드 (PC: 3컬럼) ===",
-                        "type": "basic",
-                        "name": "Div",
-                        "props": {
-                            "className": "grid grid-cols-3 gap-4 mb-4"
-                        },
-                        "responsive": {
-                            "portable": {
-                                "props": {
-                                    "className": "grid grid-cols-1 gap-4 mb-4"
-                                }
-                            }
-                        },
-                        "children": [
-                            {
-                                "comment": "=== 좌측: 최근 게시글 ===",
-                                "partial": "partials/home/_recent_posts.json"
-                            },
-                            {
-                                "comment": "=== 중앙: 인기 게시판 ===",
-                                "partial": "partials/home/_popular_boards.json"
-                            },
-                            {
-                                "comment": "=== 우측: 쇼핑몰 + 커뮤니티 가이드 ===",
-                                "type": "basic",
-                                "name": "Div",
-                                "props": {
-                                    "className": "flex flex-col gap-4"
-                                },
-                                "children": [
-                                    {
-                                        "partial": "partials/home/_shop_promo.json"
-                                    },
-                                    {
-                                        "partial": "partials/home/_community_guide.json"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "comment": "=== 하단: 게시판 요약 카드 (PC: 3컬럼, 모바일: 2컬럼) ===",
-                        "type": "basic",
-                        "name": "Div",
-                        "props": {
-                            "className": "grid grid-cols-3 gap-4"
-                        },
-                        "responsive": {
-                            "portable": {
-                                "props": {
-                                    "className": "grid grid-cols-1 gap-4"
-                                }
-                            }
-                        },
-                        "children": [
-                            {
-                                "type": "basic",
-                                "name": "Div",
-                                "iteration": {
-                                    "source": "{{home_boards.data ?? []}}",
-                                    "item_var": "item"
-                                },
-                                "children": [
-                                    {
-                                        "partial": "partials/home/_board_summary.json"
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
+                "comment": "꽃배달 공지 바",
+                "partial": "partials/shop/flower/_notice.json"
+            },
+            {
+                "comment": "꽃배달 히어로",
+                "partial": "partials/shop/flower/_hero.json"
+            },
+            {
+                "comment": "꽃배달 Today's Pick",
+                "partial": "partials/shop/flower/_pick.json"
+            },
+            {
+                "comment": "꽃배달 상황별 큐레이션",
+                "partial": "partials/shop/flower/_occasion.json"
+            },
+            {
+                "comment": "꽃배달 배송 안내",
+                "partial": "partials/shop/flower/_guide.json"
+            },
+            {
+                "comment": "꽃배달 구독 CTA",
+                "partial": "partials/shop/flower/_sub_cta.json"
+            },
+            {
+                "comment": "꽃배달 브랜드 스토리",
+                "partial": "partials/shop/flower/_story.json"
+            },
+            {
+                "comment": "꽃배달 FAQ",
+                "partial": "partials/shop/flower/_faq.json"
+            },
+            {
+                "comment": "꽃말 사전",
+                "partial": "partials/shop/flower/_dict.json"
+            },
+            {
+                "comment": "기업 대량주문 안내",
+                "partial": "partials/shop/flower/_b2b.json"
+            },
+            {
+                "comment": "꽃 관리 팁",
+                "partial": "partials/shop/flower/_tips.json"
             }
         ]
     }

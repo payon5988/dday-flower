@@ -9,5 +9,11 @@
   "register": "회원가입",
   "logout": "로그아웃",
   "more": "더보기",
-  "loading": "로딩 중..."
+  "loading": "로딩 중...",
+  "flower_premium": "프리미엄관",
+  "flower_bouquet": "꽃다발",
+  "flower_basket": "꽃바구니",
+  "flower_plant": "화분·식물",
+  "flower_wreath": "화환·근조",
+  "flower_subscription": "정기구독"
 }

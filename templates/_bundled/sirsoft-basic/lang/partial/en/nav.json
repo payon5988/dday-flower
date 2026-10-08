@@ -9,5 +9,11 @@
   "register": "Sign Up",
   "logout": "Logout",
   "more": "More",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "flower_premium": "Flower Hall",
+  "flower_bouquet": "Bouquets",
+  "flower_basket": "Baskets",
+  "flower_plant": "Plants",
+  "flower_wreath": "Wreaths",
+  "flower_subscription": "Subscription"
 }

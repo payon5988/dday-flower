@@ -1,0 +1,169 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 Today's Pick — 4:5 커스텀 카드 4개 (products 필요)"
+  },
+  "comment": "4:5 커스텀 상품 카드 — 호버 5% 줌 + 하단 그라데이션 + 당일배송 페이드인",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "flex items-end justify-between mb-1"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "H2",
+          "props": {
+            "className": "text-xl font-bold text-gray-900 dark:text-white"
+          },
+          "text": "$t:shop.flower.pick_title"
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable text-sm text-forest dark:text-gold underline underline-offset-2"
+          },
+          "text": "$t:shop.flower.pick_more",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 더보기 → 프리미엄관 — 독립 화면이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "/flower-premium", "query": {} } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "basic",
+      "name": "P",
+      "props": {
+        "className": "font-display text-sm text-gold-dark dark:text-antique-gold mb-5"
+      },
+      "text": "$t:shop.flower.pick_eyebrow"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "iteration": {
+            "source": "{{products?.data?.data ?? []}}",
+            "item_var": "product"
+          },
+          "children": [
+            {
+              "comment": "카드 전체가 상세로 이동 (product_code, 없으면 id)",
+              "type": "basic",
+              "name": "Div",
+              "props": {
+                "className": "group relative overflow-hidden rounded-2xl bg-cream dark:bg-gray-800 cursor-pointer"
+              },
+              "actions": [
+                { "comment": "audit:allow layout-list-context-navigate-merge-query 카드 → 상세 — 목록 상태 승계로 복귀 동선을 유지한다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products/{{product?.product_code ?? product?.id}}", "mergeQuery": true, "query": {} } }
+              ],
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "Div",
+                  "props": {
+                    "className": "aspect-[4/5] overflow-hidden"
+                  },
+                  "children": [
+                    {
+                      "type": "basic",
+                      "name": "Img",
+                      "props": {
+                        "src": "{{product?.thumbnail_url ?? '/images/placeholder.png'}}",
+                        "alt": "{{$localized(product?.name) ?? '$t:shop.flower.product_alt'}}",
+                        "className": "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "comment": "하단 그라데이션 오버레이 + 당일배송 문구 (호버 페이드인)",
+                  "type": "basic",
+                  "name": "Div",
+                  "props": {
+                    "className": "absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  },
+                  "children": [
+                    {
+                      "type": "basic",
+                      "name": "P",
+                      "props": {
+                        "className": "text-xs text-white"
+                      },
+                      "text": "$t:shop.flower.overlay_sameday"
+                    }
+                  ]
+                },
+                {
+                  "type": "basic",
+                  "name": "Div",
+                  "props": {
+                    "className": "p-3"
+                  },
+                  "children": [
+                    {
+                      "type": "basic",
+                      "name": "P",
+                      "props": {
+                        "className": "text-sm font-medium text-gray-900 dark:text-white truncate"
+                      },
+                      "text": "{{$localized(product?.name) ?? '$t:shop.flower.product_alt'}}"
+                    },
+                    {
+                      "type": "basic",
+                      "name": "P",
+                      "props": {
+                        "className": "font-display text-sm font-bold text-forest dark:text-white mt-0.5"
+                      },
+                      "text": "{{product?.selling_price_formatted ?? ''}}"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "if": "{{(products?.data?.data ?? []).length === 0}}",
+      "props": {
+        "className": "py-16 text-center"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "text-4xl mb-3"
+          },
+          "text": "🌱"
+        },
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "text-gray-600 dark:text-gray-400"
+          },
+          "text": "$t:shop.flower.empty_products"
+        }
+      ]
+    }
+  ]
+}

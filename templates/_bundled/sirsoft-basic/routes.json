@@ -3,12 +3,12 @@
   "description": "sirsoft-basic 사용자 템플릿 라우트 정의",
   "routes": [
     {
-      "_comment": "=== 홈 ===",
+      "_comment": "=== 홈 (꽃배달 쇼핑몰) ===",
       "path": "/",
       "layout": "home",
       "auth_required": false,
       "meta": {
-        "title": "$t:user.home.page_title"
+        "title": "$t:shop.flower.home_title"
       }
     },
 
@@ -183,6 +183,15 @@
       "auth_required": true,
       "meta": {
         "title": "$t:shop.reorder.title"
+      }
+    },
+    {
+      "_comment": "프리미엄 꽃배달관 — 꽃배달 특화 랜딩 (히어로+당일 슬롯+상품+메시지카드). 상점 경로 설정과 무관한 독립 고정 경로.",
+      "path": "/flower-premium",
+      "layout": "shop/flower_premium",
+      "auth_required": false,
+      "meta": {
+        "title": "$t:shop.flower.page_title"
       }
     },
 

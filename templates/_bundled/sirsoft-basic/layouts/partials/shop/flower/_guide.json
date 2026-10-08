@@ -1,0 +1,130 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 배송 안내 밴드 — 당일배송/시간대/메시지카드 3열"
+  },
+  "comment": "배송 안내 — 3열 정보 밴드 (이미지 없이 타이포로)",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "H2",
+      "props": {
+        "className": "text-xl font-bold text-gray-900 dark:text-white mb-4"
+      },
+      "text": "$t:shop.flower.guide_title"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "grid grid-cols-1 sm:grid-cols-3 gap-3"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-cream dark:bg-gray-800 border border-blush"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-2xl mb-2"
+              },
+              "text": "🚚"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-semibold text-forest dark:text-white"
+              },
+              "text": "$t:shop.flower.guide_same_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-xs text-gray-600 dark:text-gray-400 mt-1"
+              },
+              "text": "$t:shop.flower.guide_same_desc"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-cream dark:bg-gray-800 border border-blush"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-2xl mb-2"
+              },
+              "text": "⏰"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-semibold text-forest dark:text-white"
+              },
+              "text": "$t:shop.flower.guide_slot_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-xs text-gray-600 dark:text-gray-400 mt-1"
+              },
+              "text": "$t:shop.flower.guide_slot_desc"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-cream dark:bg-gray-800 border border-blush"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-2xl mb-2"
+              },
+              "text": "💌"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-semibold text-forest dark:text-white"
+              },
+              "text": "$t:shop.flower.guide_card_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-xs text-gray-600 dark:text-gray-400 mt-1"
+              },
+              "text": "$t:shop.flower.guide_card_desc"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

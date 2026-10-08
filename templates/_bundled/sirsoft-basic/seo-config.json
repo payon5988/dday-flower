@@ -59,12 +59,12 @@
             "fields": [
                 { "tag": "a", "attrs": { "href": "/" }, "content": "{siteName}" },
                 {
-                    "tag": "nav",
-                    "children": [
-                        { "tag": "a", "attrs": { "href": "/" }, "content": "$t:nav.home" },
-                        { "tag": "a", "attrs": { "href": "/boards/popular" }, "content": "$t:nav.popular" },
-                        { "tag": "a", "attrs": { "href": "/shop/products" }, "content": "$t:nav.shop" }
-                    ]
+         "tag": "nav",
+         "children": [
+             { "tag": "a", "attrs": { "href": "/" }, "content": "$t:nav.home" },
+             { "tag": "a", "attrs": { "href": "/flower-premium" }, "content": "$t:nav.flower_premium" },
+             { "tag": "a", "attrs": { "href": "/shop/products" }, "content": "$t:nav.shop" }
+         ]
                 },
                 {
                     "tag": "nav",
@@ -95,19 +95,19 @@
                         {
                             "tag": "div",
                             "children": [
-                                { "tag": "h4", "content": "$t:footer.community" },
-                                { "tag": "a", "attrs": { "href": "/" }, "content": "$t:nav.home" },
-                                { "tag": "a", "attrs": { "href": "/boards/popular" }, "content": "$t:nav.popular" },
-                                { "tag": "a", "attrs": { "href": "/boards" }, "content": "$t:footer.all_boards" }
+                                { "tag": "h4", "content": "$t:shop.flower.footer_shop_title" },
+                                { "tag": "a", "attrs": { "href": "/flower-premium" }, "content": "$t:shop.flower.page_title" },
+                                { "tag": "a", "attrs": { "href": "/shop/products" }, "content": "$t:user.nav.products" },
+                                { "tag": "a", "attrs": { "href": "/shop/cart" }, "content": "$t:user.nav.cart" }
                             ]
                         },
                         {
                             "tag": "div",
                             "children": [
-                                { "tag": "h4", "content": "$t:footer.info" },
-                                { "tag": "a", "attrs": { "href": "/page/about" }, "content": "$t:footer.about" },
-                                { "tag": "a", "attrs": { "href": "/page/faq" }, "content": "$t:footer.faq" },
-                                { "tag": "a", "attrs": { "href": "/page/contact" }, "content": "$t:footer.contact" }
+                                { "tag": "h4", "content": "$t:shop.flower.footer_my_title" },
+                                { "tag": "a", "attrs": { "href": "/mypage" }, "content": "$t:user.nav.mypage" },
+                                { "tag": "a", "attrs": { "href": "/mypage/orders" }, "content": "$t:user.nav.orders" },
+                                { "tag": "a", "attrs": { "href": "/mypage/wishlist" }, "content": "$t:user.nav.wishlist" }
                             ]
                         },
                         {

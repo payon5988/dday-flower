@@ -543,13 +543,31 @@ const Header: React.FC<HeaderProps> = ({
             <Button onClick={() => navigate('/')} className={getNavButtonClass(isActiveRoute('/', true))} data-testid="nav-home">
               {t('nav.home')}
             </Button>
-            <Button onClick={() => navigate('/boards/popular')} className={`flex items-center gap-1 ${getNavButtonClass(isActiveRoute('/boards/popular'))}`} data-testid="nav-popular">
-              <Span className="text-orange-500">🔥</Span>
-              {t('nav.popular')}
-            </Button>
             <Button onClick={() => navigate(`${shopBase === '/' ? '' : shopBase}/products`)} className={`flex items-center gap-1 ${getNavButtonClass(isShopActive())}`} data-testid="nav-shop">
               <Span>🛒</Span>
               {t('nav.shop')}
+            </Button>
+            <Button onClick={() => navigate('/flower-premium')} className={`flex items-center gap-1 ${getNavButtonClass(isActiveRoute('/flower-premium'))} text-[#9C7C1E]! dark:text-[#D4AF37]! font-semibold`} data-testid="nav-flower-premium">
+              <Span>🌸</Span>
+              {t('nav.flower_premium')}
+            </Button>
+            {[
+              { slug: 'bouquet', label: t('nav.flower_bouquet') },
+              { slug: 'basket', label: t('nav.flower_basket') },
+              { slug: 'plant', label: t('nav.flower_plant') },
+              { slug: 'wreath', label: t('nav.flower_wreath') },
+            ].map((cat) => (
+              <Button
+                key={cat.slug}
+                onClick={() => navigate(`${shopBase === '/' ? '' : shopBase}/category/${cat.slug}`)}
+                className={getNavButtonClass(isActiveRoute(`${shopBase === '/' ? '' : shopBase}/category/${cat.slug}`))}
+                data-testid={`nav-flower-${cat.slug}`}
+              >
+                {cat.label}
+              </Button>
+            ))}
+            <Button onClick={() => navigate('/flower-premium')} className={getNavButtonClass(false)} data-testid="nav-subscription">
+              {t('nav.flower_subscription')}
             </Button>
 
             {/* 게시판 링크 */}

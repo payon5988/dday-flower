@@ -1171,6 +1171,13 @@
     "userPosts": "User Posts",
     "userProfile": "User Profile",
     "user_notification_ws": "Notifications (Live)",
-    "wishlist": "Wishlist"
+    "wishlist": "Wishlist",
+    "flowerSlots": "Flower delivery slots",
+    "dayStatus": "Same-day status",
+    "flowerOptions": "Flower options",
+    "cardTemplates": "Message card templates",
+    "mySubscriptions": "My subscriptions",
+    "myCards": "My message cards",
+    "flowerFaqs": "Flower FAQs"
   }
 }

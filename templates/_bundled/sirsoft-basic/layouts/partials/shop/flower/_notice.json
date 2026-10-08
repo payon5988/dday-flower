@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 공지 바 — 당일배송 마감 안내 (dayStatus 필요)"
+  },
+  "comment": "공지 바 — 당일배송 마감 안내",
+  "type": "basic",
+  "name": "Div",
+  "props": {
+    "className": "bg-forest dark:bg-charcoal text-center px-4 py-2"
+  },
+  "children": [
+    {
+      "comment": "당일배송 가능 시 — 마감 시각·잔여 표시",
+      "type": "basic",
+      "name": "P",
+      "if": "{{dayStatus?.data?.same_day_available === true}}",
+      "props": {
+        "className": "text-xs font-medium text-gold"
+      },
+      "text": "{{'$t:shop.flower.notice_open_prefix' + (dayStatus?.data?.cutoff ?? '14:00') + '$t:shop.flower.notice_open_middle' + (dayStatus?.data?.same_day_remaining ?? 0) + '$t:shop.flower.notice_open_suffix'}}"
+    },
+    {
+      "comment": "당일배송 마감 시 — 내일 안내",
+      "type": "basic",
+      "name": "P",
+      "if": "{{dayStatus?.data?.same_day_available !== true}}",
+      "props": {
+        "className": "text-xs font-medium text-gold"
+      },
+      "text": "$t:shop.flower.notice_closed"
+    }
+  ]
+}

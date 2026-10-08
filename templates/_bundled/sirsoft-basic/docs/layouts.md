@@ -5,7 +5,7 @@
 ## 레이아웃 목록
 
 <!-- @generated:layouts START — ext:docgen 이 갱신. 이 블록 안은 직접 수정하지 않는다 -->
-레이아웃 166개 (루트: `layouts`).
+레이아웃 180개 (루트: `layouts`).
 
 | 그룹 | 개수 |
 |---|---|
@@ -15,9 +15,9 @@
 | `errors` | 6개 |
 | `mypage` | 11개 |
 | `page` | 1개 |
-| `partials` | 124개 |
+| `partials` | 137개 |
 | `search` | 1개 |
-| `shop` | 9개 |
+| `shop` | 10개 |
 | `users` | 2개 |
 
 | 레이아웃 | 그룹 | 종류 | extends |
@@ -154,6 +154,7 @@
 | `_modal_temp_order_not_found` | `partials` | partial | - |
 | `_product_purchase_card` | `partials` | partial | - |
 | `_admin_edit_link` | `partials` | partial | - |
+| `_flower_slots` | `partials` | partial | - |
 | `_header` | `partials` | partial | - |
 | `_info_summary` | `partials` | partial | - |
 | `_modal_cart_added` | `partials` | partial | - |
@@ -169,6 +170,18 @@
 | `_tab_detail` | `partials` | partial | - |
 | `_tab_qna` | `partials` | partial | - |
 | `_tab_reviews` | `partials` | partial | - |
+| `_b2b` | `partials` | partial | - |
+| `_dict` | `partials` | partial | - |
+| `_faq` | `partials` | partial | - |
+| `_guide` | `partials` | partial | - |
+| `_hero` | `partials` | partial | - |
+| `_notice` | `partials` | partial | - |
+| `_occasion` | `partials` | partial | - |
+| `_pick` | `partials` | partial | - |
+| `_ribbon` | `partials` | partial | - |
+| `_story` | `partials` | partial | - |
+| `_sub_cta` | `partials` | partial | - |
+| `_tips` | `partials` | partial | - |
 | `_category_breadcrumb` | `partials` | partial | - |
 | `_category_filter` | `partials` | partial | - |
 | `_new_products` | `partials` | partial | - |
@@ -180,6 +193,7 @@
 | `cart` | `shop` | 화면 | `_user_base` |
 | `category` | `shop` | 화면 | `_user_base` |
 | `checkout` | `shop` | 화면 | `_user_base` |
+| `flower_premium` | `shop` | 화면 | `_user_base` |
 | `guest_order_form` | `shop` | 화면 | `_user_base` |
 | `guest_order_show` | `shop` | 화면 | `_user_base` |
 | `index` | `shop` | 화면 | `_user_base` |
@@ -235,6 +249,7 @@
 | `/{{_global.modules?.['sirsoft-ecommerce']?.basic_info?.no_route ? '' : (_global.modules?.['sirsoft-ecommerce']?.basic_info?.route_path ?? 'shop')}}/guest/orders` | `shop/guest_order_form` | - |
 | `/{{_global.modules?.['sirsoft-ecommerce']?.basic_info?.no_route ? '' : (_global.modules?.['sirsoft-ecommerce']?.basic_info?.route_path ?? 'shop')}}/guest/orders/:order_number` | `shop/guest_order_show` | - |
 | `/{{_global.modules?.['sirsoft-ecommerce']?.basic_info?.no_route ? '' : (_global.modules?.['sirsoft-ecommerce']?.basic_info?.route_path ?? 'shop')}}/reorder/:id` | `shop/reorder` | - |
+| `/flower-premium` | `shop/flower_premium` | - |
 | `/mypage` | `-` | - |
 | `/mypage/profile` | `mypage/profile` | - |
 | `/mypage/profile/edit` | `mypage/profile-edit` | - |

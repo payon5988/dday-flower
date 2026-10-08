@@ -2,66 +2,118 @@
   "comment": "sirsoft-basic 템플릿 직속 데이터소스(실제 layout data_sources ID 기준 — user/userNotifications/searchResults/profile/userProfile). 게시판/이커머스/페이지 도메인 데이터는 각 모듈 editor-spec 이 SSoT, 본 블록은 모듈 미설치 시 폴백.",
   "byDataSourceId": {
     "mileage_balance": {
-      "comment": "마이페이지 마일리지 잔액 (mypage/mileage.json — {{mileage_balance.data.mileage.available}}).",
       "data": {
         "mileage": {
           "available": 50000,
-          "total": 75000,
-          "used": 25000
+          "pending": 10000,
+          "total_earned": 150000,
+          "expiring_soon": 5000,
+          "enabled": true
         }
       }
     },
     "mileage_history": {
-      "comment": "마이페이지 마일리지 내역 (partials/mypage/mileage/_list.json — {{mileage_history?.data?.transactions?.data}} 반복).",
       "data": {
-        "transactions": {
-          "data": [
-            {
-              "id": 1,
-              "user_id": 1,
-              "currency": "KRW",
-              "type": "purchase_earn",
-              "type_label": "구매적립",
-              "amount": 1000,
-              "amount_formatted": "1,000",
-              "remaining_amount": 800,
-              "balance_after": 50800,
-              "expires_at": "2027-06-03",
-              "expires_at_formatted": "2027-06-03",
-              "created_at": "2026-06-03T10:30:00Z",
-              "is_earning": true,
-              "expiry_state": "active",
-              "abilities": {
-                "can_manage": false
-              }
-            },
-            {
-              "id": 2,
-              "user_id": 1,
-              "currency": "KRW",
-              "type": "purchase_use",
-              "type_label": "구매사용",
-              "amount": -200,
-              "amount_formatted": "-200",
-              "remaining_amount": 0,
-              "balance_after": 50000,
-              "expires_at": null,
-              "expires_at_formatted": null,
-              "created_at": "2026-06-04T11:00:00Z",
-              "is_earning": false,
-              "expiry_state": "none",
-              "abilities": {
-                "can_manage": false
-              }
+        "data": [
+          {
+            "id": 1001,
+            "user_id": 100,
+            "currency": "KRW",
+            "type": "earn",
+            "type_label": "적립",
+            "admin_badge_group": null,
+            "user_display_category": "주문 완료",
+            "amount": 5000.0,
+            "amount_formatted": "5,000",
+            "remaining_amount": 5000.0,
+            "remaining_amount_formatted": "5,000",
+            "balance_after": 55000.0,
+            "order_id": null,
+            "order_option_id": null,
+            "order_cancel_id": null,
+            "source_transaction_id": null,
+            "granted_by": null,
+            "granted_by_name": null,
+            "granted_by_uuid": null,
+            "user_name": "홍길동",
+            "user_uuid": "u-1001",
+            "order_number": "20260601-0042",
+            "description": "Order reward",
+            "memo": null,
+            "expires_at": "2027-06-01T00:00:00+09:00",
+            "expires_at_formatted": "Jun 1, 2027 12:00 AM",
+            "expires_at_date": "2027-06-01",
+            "expired_at": null,
+            "expired_at_formatted": null,
+            "created_at": "2026-06-01T14:30:00+09:00",
+            "created_at_formatted": "Jun 1, 2026 2:30 PM",
+            "created_at_date": "2026-06-01",
+            "is_earning": true,
+            "can_edit_expiry": true,
+            "expired_amount": 0.0,
+            "expired_amount_formatted": "0",
+            "expiry_state": "active",
+            "abilities": {
+              "can_manage": false
             }
-          ],
-          "pagination": {
-            "current_page": 1,
-            "last_page": 1,
-            "per_page": 20,
-            "total": 2
           },
-          "currencies": ["KRW"]
+          {
+            "id": 1002,
+            "user_id": 100,
+            "currency": "KRW",
+            "type": "use",
+            "type_label": "사용",
+            "admin_badge_group": null,
+            "user_display_category": "주문",
+            "amount": -3000.0,
+            "amount_formatted": "-3,000",
+            "remaining_amount": 0.0,
+            "remaining_amount_formatted": "0",
+            "balance_after": 52000.0,
+            "order_id": null,
+            "order_option_id": null,
+            "order_cancel_id": null,
+            "source_transaction_id": null,
+            "granted_by": null,
+            "granted_by_name": null,
+            "granted_by_uuid": null,
+            "user_name": "홍길동",
+            "user_uuid": "u-1001",
+            "order_number": "20260530-0118",
+            "description": null,
+            "memo": null,
+            "expires_at": null,
+            "expires_at_formatted": null,
+            "expires_at_date": null,
+            "expired_at": null,
+            "expired_at_formatted": null,
+            "created_at": "2026-05-30T13:05:00+09:00",
+            "created_at_formatted": "May 30, 2026 1:05 PM",
+            "created_at_date": "2026-05-30",
+            "is_earning": false,
+            "can_edit_expiry": false,
+            "expired_amount": 0.0,
+            "expired_amount_formatted": "0",
+            "expiry_state": "active",
+            "abilities": {
+              "can_manage": false
+            }
+          }
+        ],
+        "abilities": {
+          "can_manage": false
+        },
+        "currencies": [
+          "KRW"
+        ],
+        "pagination": {
+          "current_page": 1,
+          "last_page": 1,
+          "per_page": 20,
+          "total": 2,
+          "from": 1,
+          "to": 2,
+          "has_more_pages": false
         }
       }
     },
@@ -6698,122 +6750,6 @@
         }
       }
     },
-    "mileage_balance": {
-      "data": {
-        "mileage": {
-          "available": 50000,
-          "pending": 10000,
-          "total_earned": 150000,
-          "expiring_soon": 5000,
-          "enabled": true
-        }
-      }
-    },
-    "mileage_history": {
-      "data": {
-        "data": [
-          {
-            "id": 1001,
-            "user_id": 100,
-            "currency": "KRW",
-            "type": "earn",
-            "type_label": "적립",
-            "admin_badge_group": null,
-            "user_display_category": "주문 완료",
-            "amount": 5000.0,
-            "amount_formatted": "5,000",
-            "remaining_amount": 5000.0,
-            "remaining_amount_formatted": "5,000",
-            "balance_after": 55000.0,
-            "order_id": null,
-            "order_option_id": null,
-            "order_cancel_id": null,
-            "source_transaction_id": null,
-            "granted_by": null,
-            "granted_by_name": null,
-            "granted_by_uuid": null,
-            "user_name": "홍길동",
-            "user_uuid": "u-1001",
-            "order_number": "20260601-0042",
-            "description": "Order reward",
-            "memo": null,
-            "expires_at": "2027-06-01T00:00:00+09:00",
-            "expires_at_formatted": "Jun 1, 2027 12:00 AM",
-            "expires_at_date": "2027-06-01",
-            "expired_at": null,
-            "expired_at_formatted": null,
-            "created_at": "2026-06-01T14:30:00+09:00",
-            "created_at_formatted": "Jun 1, 2026 2:30 PM",
-            "created_at_date": "2026-06-01",
-            "is_earning": true,
-            "can_edit_expiry": true,
-            "expired_amount": 0.0,
-            "expired_amount_formatted": "0",
-            "expiry_state": "active",
-            "abilities": {
-              "can_manage": false
-            }
-          },
-          {
-            "id": 1002,
-            "user_id": 100,
-            "currency": "KRW",
-            "type": "use",
-            "type_label": "사용",
-            "admin_badge_group": null,
-            "user_display_category": "주문",
-            "amount": -3000.0,
-            "amount_formatted": "-3,000",
-            "remaining_amount": 0.0,
-            "remaining_amount_formatted": "0",
-            "balance_after": 52000.0,
-            "order_id": null,
-            "order_option_id": null,
-            "order_cancel_id": null,
-            "source_transaction_id": null,
-            "granted_by": null,
-            "granted_by_name": null,
-            "granted_by_uuid": null,
-            "user_name": "홍길동",
-            "user_uuid": "u-1001",
-            "order_number": "20260530-0118",
-            "description": null,
-            "memo": null,
-            "expires_at": null,
-            "expires_at_formatted": null,
-            "expires_at_date": null,
-            "expired_at": null,
-            "expired_at_formatted": null,
-            "created_at": "2026-05-30T13:05:00+09:00",
-            "created_at_formatted": "May 30, 2026 1:05 PM",
-            "created_at_date": "2026-05-30",
-            "is_earning": false,
-            "can_edit_expiry": false,
-            "expired_amount": 0.0,
-            "expired_amount_formatted": "0",
-            "expiry_state": "active",
-            "abilities": {
-              "can_manage": false
-            }
-          }
-        ],
-        "abilities": {
-          "can_manage": false
-        },
-        "currencies": [
-          "KRW"
-        ],
-        "pagination": {
-          "current_page": 1,
-          "last_page": 1,
-          "per_page": 20,
-          "total": 2,
-          "from": 1,
-          "to": 2,
-          "has_more_pages": false
-        }
-      }
-    },
     "reviewSettings": {
       "data": {
         "review_settings": {
@@ -6821,6 +6757,76 @@
           "max_image_size_mb": 10,
           "write_deadline_days": 30
         }
+      }
+    },
+    "flowerSlots": {
+      "data": {
+        "date": "2026-10-04",
+        "slots": [
+          {
+            "time": "10:00-12:00",
+            "available": true,
+            "remaining": 5
+          },
+          {
+            "time": "14:00-16:00",
+            "available": true,
+            "remaining": 1
+          },
+          {
+            "time": "16:00-18:00",
+            "available": false,
+            "remaining": 0
+          }
+        ]
+      }
+    },
+    "dayStatus": {
+      "data": {
+        "date": "2026-10-03",
+        "cutoff": "14:00",
+        "is_today": true,
+        "same_day_available": false,
+        "same_day_remaining": 0
+      }
+    },
+    "flowerOptions": {
+      "data": {
+        "groups": {
+          "ribbon": [
+            {
+              "key": "ribbon_dusty_pink",
+              "label": "더스티 핑크 리본",
+              "price_delta": 0,
+              "color_code": "#D8A7B1"
+            }
+          ]
+        },
+        "options": [
+          {
+            "key": "ribbon_dusty_pink",
+            "label": "더스티 핑크 리본",
+            "price_delta": 0,
+            "color_code": "#D8A7B1",
+            "group": "ribbon"
+          }
+        ]
+      }
+    },
+    "cardTemplates": {
+      "data": {
+        "templates": [
+          {
+            "key": "birthday",
+            "label": "생일 축하",
+            "content": "생일 축하해! 오늘처럼 향기로운 날이 계속되길."
+          },
+          {
+            "key": "free",
+            "label": "자유 작성",
+            "content": ""
+          }
+        ]
       }
     }
   },

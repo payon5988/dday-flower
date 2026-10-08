@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 히어로 — 무드 그라데이션 + 꽃잎 + Playfair 액센트"
+  },
+  "comment": "히어로 — 무드 그라데이션 + 꽃잎 드리프트 + Playfair 액센트 + 텍스트 그림자",
+  "type": "basic",
+  "name": "Div",
+  "props": {
+    "className": "relative overflow-hidden bg-cream dark:bg-charcoal"
+  },
+  "children": [
+    {
+      "comment": "무드 조명 블롭 2개",
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "pointer-events-none absolute -top-20 -left-20 w-72 h-72 rounded-full bg-blush opacity-60 blur-3xl"
+      }
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "pointer-events-none absolute -bottom-24 -right-16 w-80 h-80 rounded-full bg-gold opacity-20 blur-3xl"
+      }
+    },
+    {
+      "comment": "흩날리는 꽃잎 3장 (모션 최소화 설정 시 정지)",
+      "type": "basic",
+      "name": "Span",
+      "props": {
+        "className": "flower-petal pointer-events-none absolute top-0 left-1/4 text-2xl"
+      },
+      "text": "❀"
+    },
+    {
+      "type": "basic",
+      "name": "Span",
+      "props": {
+        "className": "flower-petal pointer-events-none absolute top-0 left-2/4 text-xl"
+      },
+      "text": "✿"
+    },
+    {
+      "type": "basic",
+      "name": "Span",
+      "props": {
+        "className": "flower-petal pointer-events-none absolute top-0 left-3/4 text-2xl"
+      },
+      "text": "❁"
+    },
+    {
+      "type": "basic",
+      "name": "Container",
+      "props": {
+        "className": "relative py-16 px-4 text-center"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "font-display text-sm tracking-[0.3em] text-gold-dark dark:text-antique-gold mb-4"
+          },
+          "text": "PREMIUM FLOWER DELIVERY"
+        },
+        {
+          "type": "basic",
+          "name": "H1",
+          "props": {
+            "className": "flower-fade-up text-3xl font-bold text-forest dark:text-white leading-snug [text-shadow:0_2px_12px_rgba(0,0,0,0.25)]"
+          },
+          "text": "$t:shop.flower.hero_title"
+        },
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "mt-3 text-gray-600 dark:text-gray-400"
+          },
+          "text": "$t:shop.flower.hero_sub"
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "mt-6 flex justify-center gap-3"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "className": "flower-btn flower-focusable px-6 py-3 rounded-full text-white font-medium bg-forest hover:opacity-90"
+              },
+              "text": "$t:shop.flower.cta_browse",
+              "actions": [
+                { "comment": "audit:allow layout-list-context-navigate-merge-query 히어로에서 상점 목록으로 — 다른 목록이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": {} } }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "className": "flower-btn flower-focusable px-6 py-3 rounded-full font-medium bg-gold text-forest hover:opacity-90"
+              },
+              "text": "$t:shop.flower.hero_premium_cta",
+              "actions": [
+                { "comment": "audit:allow layout-list-context-navigate-merge-query 프리미엄 꽃배달관 진입 — 독립 화면이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "/flower-premium", "query": {} } }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

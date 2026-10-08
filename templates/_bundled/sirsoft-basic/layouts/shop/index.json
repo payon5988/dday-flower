@@ -140,10 +140,34 @@
             "fallback": {
                 "data": []
             }
+        },
+        {
+            "id": "dayStatus",
+            "label_key": "$t:editor.data_source.dayStatus",
+            "type": "api",
+            "endpoint": "/api/plugins/sirsoft-flower_delivery/delivery-day-status",
+            "method": "GET",
+            "auth_mode": "optional",
+            "params": {
+                "product_id": 1
+            },
+            "auto_fetch": true,
+            "loading_strategy": "progressive",
+            "fallback": {
+                "date": "",
+                "cutoff": "14:00",
+                "is_today": true,
+                "same_day_available": false,
+                "same_day_remaining": 0
+            }
         }
     ],
     "slots": {
         "content": [
+            {
+                "comment": "꽃배달 공지 바",
+                "partial": "partials/shop/flower/_notice.json"
+            },
             {
                 "type": "layout",
                 "name": "Container",

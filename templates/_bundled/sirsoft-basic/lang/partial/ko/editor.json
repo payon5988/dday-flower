@@ -1171,6 +1171,13 @@
     "userPosts": "사용자 게시글",
     "userProfile": "사용자 프로필",
     "user_notification_ws": "알림 (실시간)",
-    "wishlist": "위시리스트"
+    "wishlist": "위시리스트",
+    "flowerSlots": "꽃배달 시간 슬롯",
+    "dayStatus": "당일배송 상태",
+    "flowerOptions": "꽃 맞춤 옵션",
+    "cardTemplates": "메시지 카드 템플릿",
+    "mySubscriptions": "내 구독",
+    "myCards": "내 메시지 카드",
+    "flowerFaqs": "꽃 FAQ"
   }
 }

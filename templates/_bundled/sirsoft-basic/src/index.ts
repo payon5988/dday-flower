@@ -14,6 +14,8 @@ const logger = ((window as any).G7Core?.createLogger?.('Template:sirsoft-basic')
 };
 
 // Styles
+import '@fontsource/playfair-display/500.css';
+import '@fontsource/playfair-display/700.css';
 import './styles/main.css';
 
 // Basic Components (Header, Footer는 composite에서 사용하므로 여기서는 별도 이름으로 export)

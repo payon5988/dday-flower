@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 정기구독 CTA 밴드"
+  },
+  "comment": "정기구독 CTA 밴드 — 딥 그린 + 골드 악센트",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "rounded-2xl p-6 bg-forest dark:bg-charcoal text-white text-center"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "font-display text-xs tracking-[0.3em] text-gold mb-2"
+          },
+          "text": "SUBSCRIPTION"
+        },
+        {
+          "type": "basic",
+          "name": "H2",
+          "props": {
+            "className": "text-xl font-bold"
+          },
+          "text": "$t:shop.flower.sub_title"
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable mt-4 px-6 py-3 rounded-full font-medium bg-gold text-forest hover:opacity-90"
+          },
+          "text": "$t:shop.flower.cta_subscription",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 구독 CTA → 프리미엄관 — 독립 화면이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "/flower-premium", "query": {} } }
+          ]
+        }
+      ]
+    }
+  ]
+}

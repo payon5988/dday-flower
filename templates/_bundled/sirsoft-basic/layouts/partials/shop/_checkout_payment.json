@@ -204,6 +204,134 @@
       ]
     },
     {
+      "comment": "카드·간편결제 준비중 — PG 연동 전이라 선택 불가, 토스트 안내 (무통장은 정상 주문 가능)",
+      "type": "basic",
+      "name": "Div",
+      "props": { "className": "mt-4 p-4 rounded-xl border border-blush bg-cream dark:bg-gray-800" },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "props": { "className": "text-sm font-semibold text-forest dark:text-white" },
+          "text": "$t:shop.flower.pay_coming_title"
+        },
+        {
+          "type": "basic",
+          "name": "P",
+          "props": { "className": "text-xs text-gray-600 dark:text-gray-400 mt-0.5 mb-3" },
+          "text": "$t:shop.flower.pay_coming_desc"
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": { "className": "grid grid-cols-2 gap-2" },
+          "children": [
+            {
+              "comment": "준비중 결제수단 타일 — 클릭 시 준비중 토스트 (주문 흐름에 영향 없음)",
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "type": "button",
+                "className": "flower-btn flower-focusable w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 opacity-80"
+              },
+              "actions": [
+                { "type": "click", "handler": "toast", "params": { "type": "info", "message": "$t:shop.flower.pay_coming_toast" } }
+              ],
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-sm text-gray-700 dark:text-gray-300" },
+                  "text": "$t:shop.flower.pay_card"
+                },
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gold text-forest" },
+                  "text": "$t:shop.flower.pay_coming_badge"
+                }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "type": "button",
+                "className": "flower-btn flower-focusable w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 opacity-80"
+              },
+              "actions": [
+                { "type": "click", "handler": "toast", "params": { "type": "info", "message": "$t:shop.flower.pay_coming_toast" } }
+              ],
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-sm text-gray-700 dark:text-gray-300" },
+                  "text": "$t:shop.flower.pay_kakao"
+                },
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gold text-forest" },
+                  "text": "$t:shop.flower.pay_coming_badge"
+                }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "type": "button",
+                "className": "flower-btn flower-focusable w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 opacity-80"
+              },
+              "actions": [
+                { "type": "click", "handler": "toast", "params": { "type": "info", "message": "$t:shop.flower.pay_coming_toast" } }
+              ],
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-sm text-gray-700 dark:text-gray-300" },
+                  "text": "$t:shop.flower.pay_naver"
+                },
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gold text-forest" },
+                  "text": "$t:shop.flower.pay_coming_badge"
+                }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "type": "button",
+                "className": "flower-btn flower-focusable w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 opacity-80"
+              },
+              "actions": [
+                { "type": "click", "handler": "toast", "params": { "type": "info", "message": "$t:shop.flower.pay_coming_toast" } }
+              ],
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-sm text-gray-700 dark:text-gray-300" },
+                  "text": "$t:shop.flower.pay_toss"
+                },
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": { "className": "text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gold text-forest" },
+                  "text": "$t:shop.flower.pay_coming_badge"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "comment": "가상계좌 선택 시 안내",
       "type": "basic",
       "name": "Div",

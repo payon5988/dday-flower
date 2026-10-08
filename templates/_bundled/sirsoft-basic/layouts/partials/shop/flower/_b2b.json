@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "기업·단체 대량주문 안내 — 고객센터 연결 (견적 폼 미제공)"
+  },
+  "comment": "B2B 안내 — 정보 + 고객센터 연결 (가짜 폼 없음)",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "rounded-2xl p-6 bg-cream dark:bg-gray-800 border border-gold text-center"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "H2",
+          "props": {
+            "className": "text-xl font-bold text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.b2b_title"
+        },
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "text-sm text-gray-600 dark:text-gray-400 mt-2"
+          },
+          "text": "$t:shop.flower.b2b_desc"
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable mt-4 px-6 py-2.5 rounded-full text-white font-medium bg-forest hover:opacity-90"
+          },
+          "text": "$t:shop.flower.b2b_cta",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 고객센터로 — 독립 화면이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "/page/contact", "query": {} } }
+          ]
+        }
+      ]
+    }
+  ]
+}

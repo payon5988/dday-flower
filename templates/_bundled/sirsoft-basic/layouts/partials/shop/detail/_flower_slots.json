@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "상품 상세용 꽃배달 슬롯 패널 (flowerDetailSlots 필요)"
+  },
+  "comment": "상세 페이지 꽃배달 슬롯 — 이 꽃의 배송 시간 (코드 기준 조회)",
+  "type": "basic",
+  "name": "Div",
+  "props": {
+    "className": "mt-6 rounded-2xl overflow-hidden border border-blush"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "px-5 py-3 bg-forest text-white"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "font-semibold text-sm"
+          },
+          "text": "$t:shop.flower.detail_slots_title"
+        },
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "text-xs opacity-80 mt-0.5"
+          },
+          "text": "{{(flowerDetailSlots?.data?.date ?? '') + '$t:shop.flower.slots_date_suffix'}}"
+        }
+      ]
+    },
+    {
+      "comment": "상세 페이지 메시지 작성기 — 예약 시 함께 전송 (비우면 시간만 예약)",
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "p-4 bg-blush-light dark:bg-gray-800 border-t border-blush grid grid-cols-2 gap-2"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Input",
+          "props": {
+            "type": "text",
+            "name": "sender",
+            "value": "{{_local.detailCard?.sender ?? ''}}",
+            "placeholder": "$t:shop.flower.sender_ph",
+            "className": "w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          },
+          "actions": [
+            { "type": "change", "handler": "setState", "params": { "target": "local", "detailCard.sender": "{{$event.target.value}}" } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Input",
+          "props": {
+            "type": "text",
+            "name": "recipient",
+            "value": "{{_local.detailCard?.recipient ?? ''}}",
+            "placeholder": "$t:shop.flower.recipient_ph",
+            "className": "w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          },
+          "actions": [
+            { "type": "change", "handler": "setState", "params": { "target": "local", "detailCard.recipient": "{{$event.target.value}}" } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Textarea",
+          "props": {
+            "name": "content",
+            "value": "{{_local.detailCard?.content ?? ''}}",
+            "placeholder": "$t:shop.flower.content_ph",
+            "className": "col-span-2 w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+          },
+          "actions": [
+            { "type": "change", "handler": "setState", "params": { "target": "local", "detailCard.content": "{{$event.target.value}}" } }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "p-4 bg-cream dark:bg-gray-800 grid grid-cols-1 sm:grid-cols-3 gap-2"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "iteration": { "source": "{{flowerDetailSlots?.data?.slots ?? []}}", "item_var": "slot" },
+          "children": [
+            {
+              "type": "basic",
+              "name": "Div",
+              "props": {
+                "className": "p-3 rounded-xl border bg-white dark:bg-gray-700 text-center {{slot?.available ? 'border-blush' : 'opacity-60 border-gray-200 dark:border-gray-600'}}"
+              },
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "text-sm font-semibold text-forest dark:text-white"
+                  },
+                  "text": "{{slot?.time ?? ''}}"
+                },
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "text-xs mt-0.5 {{(slot?.available && (slot?.remaining ?? 0) <= 2) ? 'text-warm-orange font-semibold' : 'text-gray-500 dark:text-gray-400'}}"
+                  },
+                  "text": "{{slot?.available ? ('$t:shop.flower.slots_remaining_prefix' + (slot?.remaining ?? 0) + ((slot?.remaining ?? 0) <= 2 ? '$t:shop.flower.slots_urgent' : '')) : '$t:shop.flower.slots_closed'}}"
+                },
+                {
+                  "type": "basic",
+                  "name": "Button",
+                  "if": "{{slot?.available === true}}",
+                  "props": {
+                    "className": "flower-btn flower-focusable mt-2 w-full py-1.5 rounded-full text-xs text-white bg-forest hover:opacity-90"
+                  },
+                  "text": "$t:shop.flower.reserve_btn",
+                  "actions": [
+                    {
+                      "type": "click",
+                      "handler": "apiCall",
+                      "target": "/api/plugins/sirsoft-flower_delivery/delivery-slots/reserve",
+                      "params": {
+                        "method": "POST",
+                      "body": {
+                        "product_id": "{{product?.data?.id}}",
+                        "delivery_date": "{{flowerDetailSlots?.data?.date ?? ''}}",
+                        "time_slot": "{{slot?.time ?? ''}}",
+                        "message_card": {
+                          "sender": "{{_local.detailCard?.sender ?? ''}}",
+                          "recipient": "{{_local.detailCard?.recipient ?? ''}}",
+                          "content": "{{_local.detailCard?.content ?? ''}}"
+                        }
+                      }
+                      },
+                      "onSuccess": [
+                        { "handler": "toast", "params": { "type": "success", "message": "$t:shop.flower.reserve_ok" } },
+                        { "handler": "refetchDataSource", "params": { "dataSourceId": "flowerDetailSlots" } }
+                      ],
+                      "onError": [
+                        { "handler": "toast", "params": { "type": "error", "message": "$t:shop.flower.reserve_fail" } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 FAQ — API 실측 아코디언 (flowerFaqs 필요)"
+  },
+  "comment": "FAQ — API 기반 아코디언 (관리자 관리)",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "H2",
+      "props": {
+        "className": "text-xl font-bold text-gray-900 dark:text-white mb-4"
+      },
+      "text": "$t:shop.flower.faq_title"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "rounded-2xl border border-gray-200 dark:border-gray-700 divide-y divide-gray-200 dark:divide-gray-700 overflow-hidden"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "iteration": { "source": "{{flowerFaqs?.data?.faqs ?? []}}", "item_var": "faq" },
+          "children": [
+            {
+              "type": "basic",
+              "name": "Button",
+              "props": {
+                "type": "button",
+                "className": "flower-btn flower-focusable w-full flex items-center justify-between px-5 py-4 text-left bg-white dark:bg-gray-800"
+              },
+              "actions": [
+                { "type": "click", "handler": "setState", "params": { "target": "local", "openFaqId": "{{faq?.id}}" } }
+              ],
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": {
+                    "className": "font-medium text-gray-900 dark:text-white"
+                  },
+                  "text": "{{faq?.question ?? ''}}"
+                },
+                {
+                  "type": "basic",
+                  "name": "Span",
+                  "props": {
+                    "className": "text-gold-dark dark:text-antique-gold"
+                  },
+                  "text": "{{_local.openFaqId === faq?.id ? '−' : '+'}}"
+                }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Div",
+              "if": "{{_local.openFaqId === faq?.id}}",
+              "props": {
+                "className": "px-5 pb-4 bg-cream dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-400"
+              },
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "text": "{{faq?.answer ?? ''}}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "if": "{{(flowerFaqs?.data?.faqs ?? []).length === 0}}",
+      "props": {
+        "className": "py-8 text-center text-sm text-gray-500 dark:text-gray-400"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "text": "$t:shop.flower.faq_empty"
+        }
+      ]
+    }
+  ]
+}

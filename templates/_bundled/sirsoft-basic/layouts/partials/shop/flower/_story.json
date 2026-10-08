@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 브랜드 스토리 프리뷰 — 철학 + 3 가치"
+  },
+  "comment": "브랜드 스토리 — 좌측 철학 + 우측 가치 3종 (숫자 자랑 없음)",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "rounded-2xl p-6 sm:p-8 bg-forest dark:bg-charcoal text-white"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "font-display text-xs tracking-[0.3em] text-gold mb-2"
+          },
+          "text": "OUR STORY"
+        },
+        {
+          "type": "basic",
+          "name": "H2",
+          "props": {
+            "className": "text-xl font-bold"
+          },
+          "text": "$t:shop.flower.story_title"
+        },
+        {
+          "type": "basic",
+          "name": "P",
+          "props": {
+            "className": "text-sm opacity-80 mt-2 leading-relaxed"
+          },
+          "text": "$t:shop.flower.story_body"
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "Div",
+              "props": {
+                "className": "p-4 rounded-xl bg-white/10"
+              },
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "font-semibold text-sm"
+                  },
+                  "text": "$t:shop.flower.story_v1_title"
+                },
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "text-xs opacity-70 mt-1"
+                  },
+                  "text": "$t:shop.flower.story_v1_desc"
+                }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Div",
+              "props": {
+                "className": "p-4 rounded-xl bg-white/10"
+              },
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "font-semibold text-sm"
+                  },
+                  "text": "$t:shop.flower.story_v2_title"
+                },
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "text-xs opacity-70 mt-1"
+                  },
+                  "text": "$t:shop.flower.story_v2_desc"
+                }
+              ]
+            },
+            {
+              "type": "basic",
+              "name": "Div",
+              "props": {
+                "className": "p-4 rounded-xl bg-white/10"
+              },
+              "children": [
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "font-semibold text-sm"
+                  },
+                  "text": "$t:shop.flower.story_v3_title"
+                },
+                {
+                  "type": "basic",
+                  "name": "P",
+                  "props": {
+                    "className": "text-xs opacity-70 mt-1"
+                  },
+                  "text": "$t:shop.flower.story_v3_desc"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

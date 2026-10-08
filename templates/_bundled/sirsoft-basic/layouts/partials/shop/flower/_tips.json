@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃 관리 팁 3종 (정적 콘텐츠)"
+  },
+  "comment": "꽃 관리 팁 — 3종",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "H2",
+      "props": {
+        "className": "text-xl font-bold text-gray-900 dark:text-white mb-4"
+      },
+      "text": "$t:shop.flower.tips_title"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "grid grid-cols-1 sm:grid-cols-3 gap-3"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white" },
+              "text": "$t:shop.flower.tips_t1_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-600 dark:text-gray-400 mt-1" },
+              "text": "$t:shop.flower.tips_t1_desc"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white" },
+              "text": "$t:shop.flower.tips_t2_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-600 dark:text-gray-400 mt-1" },
+              "text": "$t:shop.flower.tips_t2_desc"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "font-semibold text-forest dark:text-white" },
+              "text": "$t:shop.flower.tips_t3_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": { "className": "text-xs text-gray-600 dark:text-gray-400 mt-1" },
+              "text": "$t:shop.flower.tips_t3_desc"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

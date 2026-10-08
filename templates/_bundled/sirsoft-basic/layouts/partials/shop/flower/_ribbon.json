@@ -1,0 +1,113 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "경조사 리본 문구 안내 — 축하/근조 표기법 + 종교별 변형"
+  },
+  "comment": "경조사 리본 문구 — 오른쪽 용도 + 왼쪽 보내는 분",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "H2",
+      "props": {
+        "className": "text-xl font-bold text-gray-900 dark:text-white mb-1"
+      },
+      "text": "$t:shop.flower.ribbon_title"
+    },
+    {
+      "type": "basic",
+      "name": "P",
+      "props": {
+        "className": "text-sm text-gray-500 dark:text-gray-400 mb-4"
+      },
+      "text": "$t:shop.flower.ribbon_desc"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "grid grid-cols-1 sm:grid-cols-2 gap-3"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-cream dark:bg-gray-800 border border-gold"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-semibold text-forest dark:text-white"
+              },
+              "text": "$t:shop.flower.ribbon_congrats_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-display text-lg mt-2 text-gray-900 dark:text-white"
+              },
+              "text": "$t:shop.flower.ribbon_congrats_right"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-sm text-gray-600 dark:text-gray-400 mt-1"
+              },
+              "text": "$t:shop.flower.ribbon_congrats_left"
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Div",
+          "props": {
+            "className": "p-5 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-300 dark:border-gray-600"
+          },
+          "children": [
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-semibold text-forest dark:text-white"
+              },
+              "text": "$t:shop.flower.ribbon_condolence_title"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "font-display text-lg mt-2 text-gray-900 dark:text-white"
+              },
+              "text": "$t:shop.flower.ribbon_condolence_right"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-sm text-gray-600 dark:text-gray-400 mt-1"
+              },
+              "text": "$t:shop.flower.ribbon_condolence_left"
+            },
+            {
+              "type": "basic",
+              "name": "P",
+              "props": {
+                "className": "text-xs text-gray-500 dark:text-gray-400 mt-2"
+              },
+              "text": "$t:shop.flower.ribbon_faith"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "meta": {
+    "is_partial": true,
+    "description": "꽃배달 상황별 큐레이션 — 칩 클릭 시 상점 검색으로 이동"
+  },
+  "comment": "상황별 큐레이션 — 가로 스크롤 칩 6종 (사랑/감사/축하/생일/결혼/응원)",
+  "type": "basic",
+  "name": "Container",
+  "props": {
+    "className": "py-8 px-4"
+  },
+  "children": [
+    {
+      "type": "basic",
+      "name": "H2",
+      "props": {
+        "className": "text-xl font-bold text-gray-900 dark:text-white mb-1"
+      },
+      "text": "$t:shop.flower.occasion_title"
+    },
+    {
+      "type": "basic",
+      "name": "P",
+      "props": {
+        "className": "text-sm text-gray-500 dark:text-gray-400 mb-4"
+      },
+      "text": "$t:shop.flower.occasion_desc"
+    },
+    {
+      "type": "basic",
+      "name": "Div",
+      "props": {
+        "className": "flex gap-2 overflow-x-auto pb-2"
+      },
+      "children": [
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable shrink-0 px-5 py-2.5 rounded-full text-sm font-medium border border-blush bg-white dark:bg-gray-700 text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.occ_love",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 상황 칩 → 상점 검색 — 새 검색이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": { "keyword": "장미" } } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable shrink-0 px-5 py-2.5 rounded-full text-sm font-medium border border-blush bg-white dark:bg-gray-700 text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.occ_thanks",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 상황 칩 → 상점 검색 — 새 검색이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": { "keyword": "카네이션" } } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable shrink-0 px-5 py-2.5 rounded-full text-sm font-medium border border-blush bg-white dark:bg-gray-700 text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.occ_congrats",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 상황 칩 → 상점 검색 — 새 검색이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": { "keyword": "축하" } } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable shrink-0 px-5 py-2.5 rounded-full text-sm font-medium border border-blush bg-white dark:bg-gray-700 text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.occ_birthday",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 상황 칩 → 상점 검색 — 새 검색이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": { "keyword": "생일" } } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable shrink-0 px-5 py-2.5 rounded-full text-sm font-medium border border-blush bg-white dark:bg-gray-700 text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.occ_wedding",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 상황 칩 → 상점 검색 — 새 검색이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": { "keyword": "웨딩" } } }
+          ]
+        },
+        {
+          "type": "basic",
+          "name": "Button",
+          "props": {
+            "className": "flower-btn flower-focusable shrink-0 px-5 py-2.5 rounded-full text-sm font-medium border border-blush bg-white dark:bg-gray-700 text-forest dark:text-white"
+          },
+          "text": "$t:shop.flower.occ_cheer",
+          "actions": [
+            { "comment": "audit:allow layout-list-context-navigate-merge-query 상황 칩 → 상점 검색 — 새 검색이므로 승계하지 않는다", "type": "click", "handler": "navigate", "params": { "path": "{{_global.shopBase}}/products", "query": { "keyword": "응원" } } }
+          ]
+        }
+      ]
+    }
+  ]
+}
