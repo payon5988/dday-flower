@@ -43,7 +43,7 @@ services:
     image: nginx:1.27-alpine
     restart: unless-stopped
     ports:
-      - "127.0.0.1:${WEB_PORT:-8080}:80"
+      - "127.0.0.1:${WEB_PORT:-7100}:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       # 정적 서빙용 소스 읽기 전용 마운트 (PHP 실행은 app 컨테이너가 담당)
