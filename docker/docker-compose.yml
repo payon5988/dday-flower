@@ -38,12 +38,12 @@ services:
         condition: service_started
     networks: [g7net]
 
-  # ---- Nginx (80 포트 수신) ----
+  # ---- Nginx (CloudPanel 리버스 프록시 대상 — 로컬호스트만 바인딩) ----
   web:
     image: nginx:1.27-alpine
     restart: unless-stopped
     ports:
-      - "${WEB_PORT:-80}:80"
+      - "127.0.0.1:${WEB_PORT:-8080}:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
       # 정적 서빙용 소스 읽기 전용 마운트 (PHP 실행은 app 컨테이너가 담당)
