@@ -1,0 +1,142 @@
+# dday-flower (그누보드7 + 꽃배달 쇼핑몰) 운영 Compose
+#
+# 기동:  docker compose up -d --build
+# 로그:  docker compose logs -f app
+# 중지:  docker compose down        (DB 볼륨 유지)
+# 초기화: docker compose down -v    (DB 포함 전체 삭제 — 주의)
+#
+# 전제: 프로젝트 루트에 .env 존재 (없으면 .env.docker.example 복사 후 값 채우기).
+# CloudPanel 을 쓰면: CloudPanel 리버스 프록시를 web:80 으로 향하게 하고 TLS 는
+# CloudPanel 측에서 종료 (이 Compose 는 HTTP 전용).
+name: dday-flower
+
+services:
+  # ---- PHP-FPM (앱 본체) ----
+  app:
+    build:
+      context: ..
+      dockerfile: docker/php/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      # compose 기본값을 코드로 고정 (개별 조정 시 .env 가 우선)
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+      RUN_EXTENSION_UPDATE: ${RUN_EXTENSION_UPDATE:-true}
+    volumes:
+      # storage 영속화 (업로드·설정·캐시) — 소스 교체 배포에도 유지
+      - g7-storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks: [g7net]
+
+  # ---- Nginx (80 포트 수신) ----
+  web:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      # 정적 서빙용 소스 읽기 전용 마운트 (PHP 실행은 app 컨테이너가 담당)
+      - ..:/var/www/html:ro
+      - g7-storage:/var/www/html/storage
+    depends_on:
+      - app
+    networks: [g7net]
+
+  # ---- MySQL 8.0 (utf8mb4) ----
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?DB_ROOT_PASSWORD 필요}
+      MYSQL_DATABASE: ${DB_DATABASE:-g7}
+      MYSQL_USER: ${DB_USERNAME:-g7}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 필요}
+    volumes:
+      - g7-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks: [g7net]
+
+  # ---- Redis (캐시·세션·큐 — predis 클라이언트라 PHP 확장 불필요) ----
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
+    volumes:
+      - g7-redis:/data
+    networks: [g7net]
+
+  # ---- 큐 워커 (결제 후처리·알림·훅 비동기) ----
+  worker:
+    build:
+      context: ..
+      dockerfile: docker/php/Dockerfile
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work", "--sleep=3", "--tries=3", "--max-time=3600"]
+    env_file:
+      - ../.env
+    environment:
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      RUN_MIGRATIONS: "false"
+      RUN_EXTENSION_UPDATE: "false"
+    volumes:
+      - g7-storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks: [g7net]
+
+  # ---- 스케줄러 (1분 틱) ----
+  scheduler:
+    build:
+      context: ..
+      dockerfile: docker/php/Dockerfile
+    restart: unless-stopped
+    command: ["php", "artisan", "schedule:work"]
+    env_file:
+      - ../.env
+    environment:
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      RUN_MIGRATIONS: "false"
+      RUN_EXTENSION_UPDATE: "false"
+    volumes:
+      - g7-storage:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks: [g7net]
+
+volumes:
+  g7-mysql:
+  g7-redis:
+  g7-storage:
+
+networks:
+  g7net:

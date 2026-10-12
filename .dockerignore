@@ -1,0 +1,17 @@
+.git/
+.gitignore
+node_modules/
+vendor/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+storage/app/*
+!storage/app/.gitignore
+bootstrap/cache/*.php
+.env
+npm-debug.log*
+.DS_Store
+.idea/
+.vscode/
+public/hot
